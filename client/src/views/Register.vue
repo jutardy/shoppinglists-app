@@ -1,6 +1,6 @@
 <template>
     <div class="register-page">
-        <h2>Create a new account</h2>
+        <h3 class="mb-4">Create a new account</h3>
         <form
             :data-vv-scope="formScope"
             class="form-signin"
@@ -46,7 +46,7 @@
                 class="mt-4 btn btn-lg btn-primary btn-block"
                 type="submit">Sign in</button>
 
-            <p class="small mt-2 mb-3 text-muted">
+            <p class="small mt-2 mb-0 text-muted">
                 I already have an account. <router-link to="/login">Log in.</router-link>
             </p>
         </form>
@@ -124,11 +124,13 @@ export default {
 };
 </script>
 
-<style scoped>
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
+<style lang="scss">
+    .register-page {
+        border: 1px solid $border-block;
+        border-radius: 6px;
+        background: white;
+        width: 330px;
+        padding: 20px;
         margin: 0 auto;
     }
 </style>

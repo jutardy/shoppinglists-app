@@ -2,19 +2,17 @@
     <div class="login-page">
         <div
             v-if="isLoggedIn"
-            class="loggedin-block card">
-            <div class="card-body">
-                <h5>You are already logged in, {{ user.username }}!</h5>
+            class="loggedin-block">            
+                <h5 class="mb-4">You are already logged in, {{ user.username }}!</h5>
                 <p class="card-text">It seems you've landed here entering the login url or browsing back.</p>
                 <router-link
                     class="btn btn-primary mt-2"
                     to="/shoppinglist">Go to My List</router-link>
-            </div>
         </div>
         <div
             v-else
             class="unlogged-block">
-            <h2>Welcome back!</h2>
+            <h3 class="mb-4">Welcome back!</h3>
             <form
                 :data-vv-scope="formScope"
                 class="form-login"
@@ -61,7 +59,7 @@
                     class="btn btn-lg btn-primary btn-block"
                     type="submit">Log in</button>
 
-                <p class="small mt-2 mb-3 text-muted">
+                <p class="small mt-2 mb-0 text-muted">
                     I don't have an account yet. <router-link to="/register">Register.</router-link>
                 </p>
             </form>
@@ -136,16 +134,13 @@ export default {
 };
 </script>
 
-<style scoped>
-    .loggedin-block {
-        width: 100%;
-        max-width: 330px;
-        margin: 0 auto;
-    }
-    .form-login {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
+<style lang="scss" scoped>    
+    .login-page {
+        border: 1px solid $border-block;
+        border-radius: 6px;
+        background: white;
+        width: 330px;
+        padding: 20px;
         margin: 0 auto;
     }
 </style>

@@ -5,7 +5,6 @@ import store from './store';
 import VeeValidate from 'vee-validate';
 import './api';
 import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 Vue.config.productionTip = false;
 Vue.use(VeeValidate);

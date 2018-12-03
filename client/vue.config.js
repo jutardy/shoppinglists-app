@@ -5,7 +5,6 @@ module.exports = {
             sass: {
                 data: `
                     @import "@/assets/sass/variables.scss";
-                    @import "~bootstrap/scss/bootstrap";
                 `
             }
         }

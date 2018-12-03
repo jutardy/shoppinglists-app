@@ -88,6 +88,13 @@ export default {
 };
 </script>
 
-<style scoped>
-    .router-link-exact-active { color: #111 !important; }
+<style lang="scss">
+    .bg-light { background-color: $navbar-bg !important; }
+    .navbar-light .navbar-nav {
+        .nav-link {
+            color: $black !important;
+            &:focus, &:hover { color: $blue !important; }
+            &.router-link-exact-active { color: $red !important; }
+        }
+    }
 </style>

@@ -1,4 +1,24 @@
-$grey-light: #efefef;
+$black: #06000a;
+$black-light: #272D2D;
+$blue-light: #8AB0AB;
+$green-light: #A1CCA5;
+$grey-dark: #363537;
+$grey-light: #e6e6e8;
+$purple: #300032;
+$red: #c43235;
+$yellow: #FFBF00;
+$pink: #EA526F;
+$blue: #258EA6;
+$border-block: #CCCCCE;
 
-$body-bg: $grey-light !important;
-$body-color: #111;
+$body-bg: $grey-light !important; 
+$navbar-bg: white;
+$body-color: $black;
+
+$theme-colors: (
+  primary: $blue,
+  danger: $red
+);
+
+$input-border-color: #CCCCCE;
+$input-btn-focus-box-shadow: none;
