@@ -1,3 +1,4 @@
+import './assets/fonts/font-awesome/css/font-awesome.min.css';
 import 'bootstrap';
 import 'bootstrap/scss/bootstrap.scss';
 import Vue from 'vue';

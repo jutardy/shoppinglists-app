@@ -14,6 +14,23 @@
             v-else
             class="list-content">
             <h1>{{ title }}</h1>
+            <form
+                v-if="isMyList"
+                class="form-creation mt-4"
+                @submit.prevent="submitCreation"
+            >
+                <div class="new-item-input-wrapper position-relative">
+                    <input
+                        class="input-new-item w-100"
+                        type="text"
+                        :placeholder="createPlaceholder">
+                    <button
+                        class="btn-new-item position-absolute cursor-pointer"
+                        type="submit">
+                        <i class="fa fa-plus" aria-hidden="true" />
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </template>
@@ -25,7 +42,9 @@ export default {
         return {
             title: '',
             user: null,
-            userNotFound: false
+            userNotFound: false,
+            formCreationScope: 'creationScope',
+            items: []
         };
     },
     computed: {
@@ -40,6 +59,9 @@ export default {
         },
         isMyList () {
             return this.isLoggedIn && (this.userId === null || this.userId === this.authUser._id);
+        },
+        createPlaceholder () {
+            return this.items.length > 0 ? 'Add another item' : 'Add your first item';
         }
     },
     watch: {
@@ -74,7 +96,8 @@ export default {
         },
         setTitle (username) {
             this.title = `${username}'s shopping list`;
-        }
+        },
+        submitCreation () {}
     }
 };
 </script>
@@ -88,4 +111,7 @@ export default {
         padding: 20px;
         margin: 0 auto;
     }
+    .new-item-input-wrapper { width: 500px; margin: 0 auto; height: 60px; }
+    .input-new-item { padding: 12px 20px 12px 80px; }
+    .btn-new-item { height: 60px; width: 60px; left: 0; font-size: 24px; }
 </style>
