@@ -1,5 +1,5 @@
 <template>
-    <div class="list-page">
+    <div class="list-page view-container">
         <div
             v-if="userNotFound"
             class="message-block">

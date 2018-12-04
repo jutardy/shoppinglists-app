@@ -1,55 +1,57 @@
 <template>
-    <div class="register-page">
-        <h3 class="mb-4">Create a new account</h3>
-        <form
-            :data-vv-scope="formScope"
-            class="form-signin"
-            @submit.prevent="validateForm">
-            <input
-                v-validate="'required'"
-                v-model="username"
-                name="username"
-                type="text"
-                class="form-control"
-                placeholder="Username">
-            <span
-                v-show="errors.has('username', formScope)"
-                class="small text-danger text-left d-block">{{ errors.first('username', formScope) }}</span>
+    <div class="register-page view-container">
+        <div class="register-block">
+            <h2 class="mb-4">Create a new account</h2>
+            <form
+                :data-vv-scope="formScope"
+                class="form-signin"
+                @submit.prevent="validateForm">
+                <input
+                    v-validate="'required'"
+                    v-model="username"
+                    name="username"
+                    type="text"
+                    class="form-control"
+                    placeholder="Username">
+                <span
+                    v-show="errors.has('username', formScope)"
+                    class="small text-danger text-left d-block">{{ errors.first('username', formScope) }}</span>
 
-            <input
-                v-validate="'required|email'"
-                v-model="email"
-                name="email"
-                type="text"
-                class="form-control mt-2"
-                placeholder="Email address">
-            <span
-                v-show="errors.has('email', formScope)"
-                class="small text-danger text-left d-block">{{ errors.first('email', formScope) }}</span>
-            <span
-                v-show="existingEmailMsg !== ''"
-                class="small text-danger text-left d-block">{{ existingEmailMsg }}</span>
+                <input
+                    v-validate="'required|email'"
+                    v-model="email"
+                    name="email"
+                    type="text"
+                    class="form-control mt-2"
+                    placeholder="Email address">
+                <span
+                    v-show="errors.has('email', formScope)"
+                    class="small text-danger text-left d-block">{{ errors.first('email', formScope) }}</span>
+                <span
+                    v-show="existingEmailMsg !== ''"
+                    class="small text-danger text-left d-block">{{ existingEmailMsg }}</span>
 
-            <input
-                v-validate="'required|min:6'"
-                v-model="password"
-                name="password"
-                type="password"
-                class="form-control mt-2"
-                placeholder="Password">
-            <span
-                v-show="errors.has('password', formScope)"
-                class="small text-danger text-left d-block">{{ errors.first('password', formScope) }}</span>
+                <input
+                    v-validate="'required|min:6'"
+                    v-model="password"
+                    name="password"
+                    type="password"
+                    class="form-control mt-2"
+                    placeholder="Password">
+                <span
+                    v-show="errors.has('password', formScope)"
+                    class="small text-danger text-left d-block">{{ errors.first('password', formScope) }}</span>
 
-            <button
-                :disabled="formHasError"
-                class="mt-4 btn btn-lg btn-primary btn-block"
-                type="submit">Sign in</button>
+                <button
+                    :disabled="formHasError"
+                    class="mt-4 btn btn-lg btn-primary btn-block"
+                    type="submit">Sign in</button>
 
-            <p class="small mt-2 mb-0 text-muted">
-                I already have an account. <router-link to="/login">Log in.</router-link>
-            </p>
-        </form>
+                <p class="small mt-2 mb-0 text-muted">
+                    I already have an account. <router-link to="/login">Log in.</router-link>
+                </p>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -125,11 +127,11 @@ export default {
 </script>
 
 <style lang="scss">
-    .register-page {
+    .register-block {
         border: 1px solid $border-block;
         border-radius: 6px;
         background: white;
-        width: 330px;
+        width: 500px;
         padding: 20px;
         margin: 0 auto;
     }

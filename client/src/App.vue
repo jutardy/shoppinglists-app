@@ -20,13 +20,22 @@ export default {
 #app {
     text-align: center;
     color: #2c3e50;
+    height: 100vh;
 }
 .form-control:focus {
     border-color: #999;
     box-shadow: none;
 }
 .page-container {
-    padding-top: 60px;
+    height: calc(100% - 56px);
+    
+    .view-container { padding-top: 60px; }
+    .register-page, .login-page {
+        background: url('./assets/images/background.jpg');
+        background-size: cover;
+        background-position: center;
+        height: 100%;
+    }
 }
 .cursor-pointer {
     cursor: pointer;

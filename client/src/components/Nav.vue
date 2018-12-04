@@ -89,6 +89,7 @@ export default {
 </script>
 
 <style lang="scss">
+    .navbar { height: $navbar-height; }
     .bg-light { background-color: $navbar-bg !important; }
     .navbar-light .navbar-nav {
         .nav-link {
