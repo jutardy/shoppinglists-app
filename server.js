@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import config from './api/config';
+import config from './api/libs/config';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -28,16 +28,17 @@ app.get('/', function (req, res) {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use('/api', routesAuth);
-app.use('/api/items', routesItems);
-app.use('/api/users', routesUsers);
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', process.env.APP_DOMAIN);
+app.use(function (req, res, next) {    
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     next();
 });
+
+app.use('/api', routesAuth);
+app.use('/api/items', routesItems);
+app.use('/api/users', routesUsers);
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'});

@@ -2,20 +2,25 @@
     <div class="login-page">
         <div
             v-if="isLoggedIn"
-            class="loggedin-block">            
-                <h5 class="mb-4">You are already logged in, {{ user.username }}!</h5>
-                <p class="card-text">It seems you've landed here entering the login url or browsing back.</p>
-                <router-link
-                    class="btn btn-primary mt-2"
-                    to="/shoppinglist">Go to My List</router-link>
+            class="loggedin-block">
+            <h5 class="mb-4">You are already logged in, {{ user.username }}!</h5>
+            <p class="card-text">It seems you've landed here entering the login url or browsing back.</p>
+            <router-link
+                class="btn btn-primary mt-2"
+                to="/shoppinglist">Go to My List</router-link>
         </div>
         <div
             v-else
             class="unlogged-block">
-            <h3 class="mb-4">Welcome back!</h3>
+            <h3 class="mb-0">Welcome back!</h3>
+            <div
+                v-if="sessionExpired"
+                class="small text-danger session-message mt-2">
+                Your session expired. Please login again.
+            </div>
             <form
                 :data-vv-scope="formScope"
-                class="form-login"
+                class="form-login mt-4"
                 @submit.prevent="validateForm">
 
                 <input
@@ -50,7 +55,7 @@
                     <label>
                         <input
                             type="checkbox"
-                            value="remember-me"> Remember me
+                            v-model="extendToken"> Remember me
                     </label>
                 </div>
 
@@ -75,8 +80,10 @@ export default {
             formScope: 'loginScope',
             email: '',
             password: '',
+            extendToken: false,
             invalidPasswordlMsg: '',
-            unregisteredEmailMsg: ''
+            unregisteredEmailMsg: '',
+            sessionExpired: this.$route.query.hasOwnProperty('session-expired') || false
         };
     },
     computed: {
@@ -113,7 +120,7 @@ export default {
             }).catch(() => {});
         },
         submitLogin () {
-            let user = { email: this.email, password: this.password };
+            let user = { email: this.email, password: this.password, extendToken: this.extendToken };
 
             this.$store.dispatch('login', user)
                 .then(() => {
@@ -134,7 +141,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>    
+<style lang="scss" scoped>
     .login-page {
         border: 1px solid $border-block;
         border-radius: 6px;

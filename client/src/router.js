@@ -1,24 +1,19 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import About from '@/views/About';
-import Documentation from '@/views/Documentation';
-import Home from '@/views/Home';
-import Login from '@/views/Login';
-import Register from '@/views/Register';
-import ShoppingList from '@/views/ShoppingList';
 
 Vue.use(Router);
 
 export default new Router({
+    mode: 'history',
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: Home
+            name: 'Home',
+            component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
         },
         {
             path: '/about',
-            name: 'about',
+            name: 'About',
             component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
         },
         {
@@ -34,7 +29,7 @@ export default new Router({
             component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
         },
         {
-            path: '/shoppinglist',
+            path: '/shoppinglist/:userId?',
             name: 'ShoppingList',
             component: () => import(/* webpackChunkName: "shoppinglist" */ './views/ShoppingList.vue')
         },

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import { createJWToken } from '../libs/token';
 
 exports.register = function(req, res) {
     let data = req.body || {};
@@ -38,11 +38,7 @@ exports.login = function(req, res) {
                     }});
                 }
                 if (result) {
-                    const token = jwt.sign(
-                        { email: user.email, id: user._id }, 
-                        process.env.APP_SECRET, 
-                        { expiresIn: process.env.TOKEN_DURATION }
-                    );
+                    const token = createJWToken(user, req.body.extendToken);
 
                     return res.json({ user: user, token: token });
                 }
