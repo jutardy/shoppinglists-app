@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get('/:id', shoppingItemController.getItems);
 router.post('/', shoppingItemController.createItem);
-router.delete('/:id', shoppingItemController.deleteItem);
+router.delete('/', shoppingItemController.deleteItem);
 
 export default router;

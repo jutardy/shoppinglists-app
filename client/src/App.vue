@@ -4,15 +4,17 @@
         <div class="page-container">
             <router-view />
         </div>
+        <Modal />
     </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav';
+import Modal from '@/components/Modal';
 
 export default {
     name: 'App',
-    components: { Nav }
+    components: { Nav, Modal }
 };
 </script>
 
@@ -21,13 +23,17 @@ export default {
     text-align: center;
     height: 100vh;
 }
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 .form-control:focus {
-    border-color: #999;
     box-shadow: none;
 }
 .page-container {
     height: calc(100% - 56px);
-    
+
     .view-container { padding-top: 60px; }
     .register-page, .login-page {
         background: url('./assets/images/background.jpg');

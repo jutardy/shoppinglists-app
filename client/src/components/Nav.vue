@@ -95,7 +95,7 @@ export default {
         .nav-link {
             color: $black !important;
             &:focus, &:hover { color: $blue !important; }
-            &.router-link-exact-active { color: $red !important; }
+            &.router-link-exact-active { color: $blue !important; font-weight: bold;}
         }
     }
 </style>

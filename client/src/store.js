@@ -7,7 +7,16 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
-        user: localStorage.getItem('authUser') || null
+        user: localStorage.getItem('authUser') || null,
+        modalContent: {
+            opened: false,
+            title: '',
+            body: '',
+            cancelCTA: '',
+            submitCTA: '',
+            submitEvent: '',
+            submitEventParam: null
+        }
     },
     mutations: {
         authenticate (state, res) {
@@ -17,6 +26,28 @@ export default new Vuex.Store({
         logout (state) {
             state.token = '';
             state.user = null;
+        },
+        setModalContent (state, content) {
+            state.modalContent = {
+                title: content.title ? content.title : '',
+                body: content.body ? content.body : '',
+                cancelCTA: content.cancelCTA ? content.cancelCTA : '',
+                submitCTA: content.submitCTA ? content.submitCTA : '',
+                submitEvent: content.submitEvent ? content.submitEvent : '',
+                submitEventParam: content.submitEventParam ? content.submitEventParam : null,
+                opened: true
+            };
+        },
+        closeModal (state) {
+            state.modalContent = {
+                opened: false,
+                title: '',
+                body: '',
+                cancelCTA: '',
+                submitCTA: '',
+                submitEvent: '',
+                submitEventParam: null
+            };
         }
     },
     actions: {
@@ -55,6 +86,7 @@ export default new Vuex.Store({
     },
     getters: {
         isLoggedIn: state => !!state.token,
-        getUser: state => JSON.parse(state.user)
+        getUser: state => JSON.parse(state.user),
+        getModalContent: state => state.modalContent
     }
 });
