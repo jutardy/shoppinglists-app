@@ -37,6 +37,10 @@ export default new Router({
             path: '/documentation',
             name: 'Documentation',
             component: () => import(/* webpackChunkName: "documentation" */ './views/Documentation.vue')
-        }
+        },
+        { 
+            path: "*",
+            name: 'PageNotFound',
+            component: () => import(/* webpackChunkName: "pagenotfound" */ './views/PageNotFound.vue') }
     ]
 });

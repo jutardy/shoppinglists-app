@@ -1,100 +1,64 @@
 <template>
     <div class="list-page view-container">
-        <div
+        <MessageBlock
             v-if="userNotFound"
-            class="message-block">
-            <h5 class="mb-4">Shopping list not found.</h5>
-            <p class="card-text">The list you've requesetd doesn't exist.</p>
-            <a
-                class="btn btn-primary mt-2"
-                tabindex
-                @click="$router.go(-1)">Go back</a>
-        </div>
+            title="Shopping list not found."
+            body="The list you've requested doesn't exist." />
         <div
             v-else
             class="list-content">
-            <h1>{{ title }}</h1>
-            <div class="summary text-muted">
-                {{ summary }}
-                <a
-                    v-if="items.length > 0 && isMyList"
-                    class="btn-link cursor-pointer"
-                    tabindex
-                    @click="emptyList">Empty list.</a>
-            </div>
-            <form
-                v-if="isMyList"
-                class="form-creation mt-4 mb-4"
-                @submit.prevent="submitCreation"
-            >
-                <div
-                    :class="{ active: focusCreate }"
-                    class="new-item-input-wrapper position-relative">
-                    <input
-                        class="input-new-item w-100 form-control"
-                        type="text"
-                        v-model.trim="newItem"
-                        maxlength="100"
-                        @focus="focusCreate=true"
-                        @blur="focusCreate=false"
-                        :placeholder="createPlaceholder">
-                    <button
-                        class="btn btn-new-item position-absolute cursor-pointer bg-white"
-                        type="submit">
-                        <i class="fa fa-plus" aria-hidden="true" />
-                    </button>
+            <Loader
+                v-show="userLoading"
+                class="m-tb-50" />
+            <div v-show="!userLoading">
+                <h1>{{ title }}</h1>
+                <div class="summary text-muted">
+                    {{ summary }}
+                    <a
+                        v-if="items.length > 0 && isMyList"
+                        class="btn-link cursor-pointer"
+                        tabindex
+                        @click="emptyList">Empty list.</a>
                 </div>
-            </form>
+                <form
+                    v-if="isMyList"
+                    class="form-creation mt-4 mb-4"
+                    @submit.prevent="submitCreation">
+                    <div
+                        :class="{ active: focusCreate }"
+                        class="new-item-input-wrapper position-relative">
+                        <input
+                            class="input-new-item w-100 form-control"
+                            type="text"
+                            v-model.trim="newItem"
+                            maxlength="100"
+                            @focus="focusCreate=true"
+                            @blur="focusCreate=false"
+                            :placeholder="createPlaceholder">
+                        <button
+                            class="btn btn-new-item position-absolute cursor-pointer bg-white"
+                            type="submit">
+                            <i class="fa fa-plus" aria-hidden="true" />
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-            <div class="list-block">
+            <div class="list-block position-relative">
+                <div
+                    v-show="listLoading"
+                    class="loading-overlay position-absolute w-100">
+                    <Loader class="m-tb-50" />
+                </div>
                 <ul
                     v-if="items.length > 0"
                     class="list-table w-100">
-                    <li
+                    <ListItem
                         v-for="(item, index) in items"
+                        :item="item"
+                        :show-actions="isMyList"
                         :key="index"
-                        :data-index="index"
-                        :class="{'is-editing': editedItem !== null && editedItem._id === item._id}"
-                        class="list-row d-flex d-flex-row">
-                        <div class="text-cell text-left d-inline-block align-self-center">
-                            <span v-show="editedItem === null || editedItem._id !== item._id">
-                                {{ item.name }}
-                            </span>
-                            <input
-                                v-if="editedItem !== null && editedItem._id === item._id"
-                                class="input-edit-item w-100 form-control border-0 p-sides-10"
-                                type="text"
-                                v-model.trim="editedItem.name"
-                                maxlength="100"
-                                v-focus
-                                @blur="editionCanceled($event, item)"
-                                @keyup.enter="updateItem(item)"
-                                @keyup.esc="editionCanceled(item)">
-                        </div>
-                        <div
-                            v-if="isMyList"
-                            class="actions-cell text-left d-inline-block align-self-top">
-                            <a
-                                v-show="editedItem === null || editedItem._id !== item._id"
-                                class="btn-edit cursor-pointer text-center"
-                                @click="editionStart(item)">
-                                <i class="fa fa fa-pencil" aria-hidden="true" />
-                            </a>
-                            <a
-                                v-show="editedItem !== null && editedItem._id === item._id"
-                                class="btn-edit-done cursor-pointer text-center text-success"
-                                @mousedown.prevent
-                                @click="updateItem(item)">
-                                <i class="fa fa-check-circle" aria-hidden="true" />
-                            </a>
-                            <a
-                                v-show="editedItem === null || editedItem._id !== item._id"
-                                class="btn-delete cursor-pointer text-center"
-                                @click="removeConfirmation(item)">
-                                <i class="fa fa fa-times" aria-hidden="true" />
-                            </a>
-                        </div>
-                    </li>
+                        :data-index="index" />
                 </ul>
             </div>
         </div>
@@ -102,19 +66,26 @@
 </template>
 
 <script>
+import ListItem from '../components/ListItem.vue';
+import Loader from '../components/Loader.vue';
+import MessageBlock from '../components/MessageBlock.vue';
+
 export default {
     name: 'ShoppingList',
+    components: {
+        ListItem,
+        Loader,
+        MessageBlock
+    },
     data () {
         return {
-            canCancelEdition: true,
-            editedItem: null,
             focusCreate: false,
-            formCreationScope: 'creationScope',
-            isLoading: false,
             items: [],
+            listLoading: false,
             newItem: '',
             title: '',
             user: null,
+            userLoading: false,
             userNotFound: false
         };
     },
@@ -138,11 +109,6 @@ export default {
             return this.items.length !== 1 ? `${this.items.length} items.` : '1 item.';
         }
     },
-    directives: {
-        focus: {
-            inserted (el) { el.focus(); }
-        }
-    },
     watch: {
         userId () {
             this.userNotFound = false;
@@ -153,13 +119,15 @@ export default {
         if (!this.isLoggedIn && this.userId === null) {
             this.$router.push('/login');
         } else {
-            this.initUser();  
+            this.initUser();
         }
     },
     created () {
+        this.$events.$on('updateListItem', this.updateItem);
         this.$events.$on('removeItemEvent', this.removeItem);
     },
     beforeDestroy () {
+        this.$events.$off('updateListItem', this.updateItem);
         this.$events.$off('removeItemEvent', this.removeItem);
     },
     methods: {
@@ -172,22 +140,26 @@ export default {
             }
         },
         getUsername () {
-            this.userNotFound = false;
+            if (!this.userLoading) {
+                this.userNotFound = false;
+                this.userLoading = true;
 
-            this.$http.get(`/users/${this.userId}`)
-                .then(response => {
-                    if (response.data && response.data.user) {
-                        this.user = response.data.user;
-                        this.setTitle(this.user.username);
-                        this.getList();
-                    } else {
-                        this.userNotFound = true;
-                    }
-                })
-                .catch(() => {
-                    this.isLoading = false;
-                    this.openErrorModal('retrieve the user info');
-                });
+                this.$http.get(`/users/${this.userId}`)
+                    .then(response => {
+                        if (response.data && response.data.user) {
+                            this.user = response.data.user;
+                            this.setTitle(this.user.username);
+                            this.getList();
+                        } else {
+                            this.userNotFound = true;
+                        }
+                        this.userLoading = false;
+                    })
+                    .catch(() => {
+                        this.userLoading = false;
+                        this.openErrorModal('retrieve the user info');
+                    });
+            }
         },
         setTitle (username) {
             this.title = `${username}'s shopping list`;
@@ -213,79 +185,72 @@ export default {
         emptyList () {
             this.items = [];
         },
-        removeConfirmation (item) {
-            let content = {
-                title: 'You\'re about to delete an item permanently',
-                body: `Are you sure you want to delete ${item.name}?`,
-                submitCTA: 'Delete',
-                cancelCTA: 'Cancel',
-                submitEvent: 'removeItemEvent',
-                submitEventParam: item
-            };
-            this.$store.commit('setModalContent', content);
-        },
         removeItem (item) {
-            this.$http.delete('/items', {
-                data: { id: item._id }
-            })
-                .then(response => {
-                    this.$store.commit('closeModal');
-                    this.getList();
+            if (!this.listLoading) {
+                this.listLoading = true;
+
+                this.$http.delete('/items', {
+                    data: { id: item._id }
                 })
-                .catch(() => {
-                    this.isLoading = false;
-                    this.openErrorModal('delete your item');
-                });
-        },
-        editionStart (item) {
-            this.editedItem = { ...item };
-        },
-        editionCanceled (event, item) {
-            if (!this.editedItem) return;
-            this.editedItem = null;
-        },
-        updateItem (item) {
-            if (!this.editedItem) return;
-            if (!this.editedItem.name !== item.name) {
-                this.isLoading = true;
-                this.$http.put('/items', this.editedItem)
                     .then(response => {
-                        this.isLoading = false;
-                        this.editedItem = null;
+                        this.listLoading = false;
+                        this.$store.commit('closeModal');
                         this.getList();
                     })
-                    .catch(error => {
-                        this.isLoading = false;
+                    .catch(() => {
+                        this.listLoading = false;
+                        this.openErrorModal('delete your item');
+                    });
+            }
+        },
+        updateItem (item) {
+            if (!this.listLoading) {
+                this.listLoading = true;
+
+                this.$http.put('/items', item)
+                    .then(response => {
+                        this.listLoading = false;
+                        this.getList();
+                    })
+                    .catch(() => {
+                        this.listLoading = false;
                         this.openErrorModal('update your item');
                     });
             }
-
         },
         getList () {
-            if (!this.userNotFound) {
+            if (!this.userNotFound && !this.listLoading) {
                 const uid = this.isMyList && this.userId === null ? this.authUser._id : this.userId;
+                this.listLoading = true;
+
                 this.$http.get(`/items/${uid}`)
                     .then(response => {
                         this.items = response.data;
+                        this.listLoading = false;
                     })
                     .catch(() => {
-                        this.isLoading = false;
+                        this.listLoading = false;
                         this.openErrorModal('refresh your shopping list');
                     });
             }
         },
         createItem () {
-            this.$http.post('/items', {
-                user: this.authUser._id,
-                name: this.newItem
-            })
-                .then(response => {
-                    this.getList();
+            if (!this.listLoading) {
+                this.listLoading = true;
+
+                this.$http.post('/items', {
+                    user: this.authUser._id,
+                    name: this.newItem
                 })
-                .catch(error => {
-                    this.isLoading = false;
-                    this.openErrorModal('create your item');
-                });
+                    .then(response => {
+                        this.listLoading = false;
+                        this.getList();
+                    })
+                    .catch(() => {
+                        this.listLoading = false;
+                        this.openErrorModal('create your item');
+                    });
+            }
         },
         openErrorModal (action) {
             let content = {
@@ -301,80 +266,42 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .message-block {
-        border: 1px solid $border-block;
-        border-radius: 6px;
-        background: white;
-        width: 330px;
-        padding: 20px;
-        margin: 0 auto;
-    }
-    .list-content {
-        width: 500px;
-        margin: 0 auto;
-    }
-    .new-item-input-wrapper {
+.list-content {
+    width: 500px;
+    margin: 0 auto;
+}
+.new-item-input-wrapper {
+    height: 60px;
+    border: 1px solid #CCCCCE;
+    border-radius: 6px;
+    overflow: hidden;
+
+    .input-new-item {
+        padding: 12px 20px 12px 60px;
         height: 60px;
-        border: 1px solid #CCCCCE;
-        border-radius: 6px;
-        overflow: hidden;
-
-        .input-new-item {
-            padding: 12px 20px 12px 60px;
-            height: 60px;
-            border: 0;
-            display: inline;
-        }
-        .btn-new-item {
-            height: 60px;
-            width: 60px;
-            left: 0;
-            font-size: 24px;
-            background: none !important;
-            i { color: $blue; }
-            &:hover {
-                i { opacity: 0.6; }
-            }
-        }
-        &.active {
-            border: 1px solid $blue;
-            .input-new-item { background-color: white !important; }
-        }
-     }
-
-    .list-row {
-        border-bottom: 1px solid $border-block;
-        min-height: 39px;
-        &.is-editing { padding: 0 !important; }
+        border: 0;
+        display: inline;
     }
-    .text-cell {
-        width: calc(100% - 70px);
-        span { 
-            display: block; 
-            padding: 7px 0 7px 10px;
+    .btn-new-item {
+        height: 60px;
+        width: 60px;
+        left: 0;
+        font-size: 24px;
+        background: none !important;
+        i { color: $blue; }
+        &:hover {
+            i { opacity: 0.6; }
         }
     }
-    .input-edit-item { background-color: rgba(255, 255, 255, 0.4) !important; }
-    .actions-cell {
-        width: 70px;
-        a {
-            padding: 7px 0 6px;
-            width: 35px;
-            color: $input-focus-border-color;
-            display: inline-block;
-            &.btn-delete:hover { color: $red; }
-        }
+    &.active {
+        border: 1px solid $blue;
+        .input-new-item { background-color: white !important; }
     }
-    .highlight {
-        animation-name: colorhighlight;
-        animation-duration: 0.5s;
-    }
-
-@keyframes colorhighlight {
-    0% { background-color: $red; }
-    25% { background-color: $red-light; }
-    50% { background-color: $red; }
-    75% { background-color: $red-light; }
-    100% { background-color: $red; }
+}
+.loading-overlay {
+    background: rgba(230, 230, 232, 0.8);
+    top: 0;
+    z-index: 100;
+    height:100%;
 }
 </style>

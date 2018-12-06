@@ -1,15 +1,13 @@
 <template>
     <div class="login-page view-container">
         <div class="login-block">
-            <div
+            <MessageBlock
                 v-if="isLoggedIn"
-                class="loggedin-block">
-                <h5 class="mb-4">You are already logged in, {{ user.username }}!</h5>
-                <p class="card-text">It seems you've landed here entering the login url or browsing back.</p>
-                <router-link
-                    class="btn btn-primary mt-2"
-                    to="/shoppinglist">Go to My List</router-link>
-            </div>
+                :title="`You are already logged in, ${user.username }!`"
+                body="It seems you've landed here entering the login url or browsing back."
+                cta="Go to My List"
+                route="/shoppinglist"
+                class="w-100 p-0 border-0" />
             <div
                 v-else
                 class="unlogged-block">
@@ -75,8 +73,11 @@
 </template>
 
 <script>
+import MessageBlock from '../components/MessageBlock.vue';
+
 export default {
     name: 'Login',
+    components: { MessageBlock },
     data () {
         return {
             formScope: 'loginScope',
