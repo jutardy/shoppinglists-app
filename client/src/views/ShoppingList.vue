@@ -152,9 +152,9 @@ export default {
     mounted () {
         if (!this.isLoggedIn && this.userId === null) {
             this.$router.push('/login');
+        } else {
+            this.initUser();  
         }
-        this.initUser();
-        this.getList();
     },
     created () {
         this.$events.$on('removeItemEvent', this.removeItem);
@@ -164,7 +164,12 @@ export default {
     },
     methods: {
         initUser () {
-            !this.isMyList ? this.getUsername() : this.setTitle(this.authUser.username);
+            if (this.isMyList) {
+                this.setTitle(this.authUser.username);
+                this.getList();
+            } else {
+                this.getUsername();
+            }
         },
         getUsername () {
             this.userNotFound = false;
@@ -174,12 +179,14 @@ export default {
                     if (response.data && response.data.user) {
                         this.user = response.data.user;
                         this.setTitle(this.user.username);
+                        this.getList();
                     } else {
                         this.userNotFound = true;
                     }
                 })
                 .catch(() => {
-                    this.userNotFound = true;
+                    this.isLoading = false;
+                    this.openErrorModal('retrieve the user info');
                 });
         },
         setTitle (username) {
@@ -225,8 +232,9 @@ export default {
                     this.$store.commit('closeModal');
                     this.getList();
                 })
-                .catch(error => {
-
+                .catch(() => {
+                    this.isLoading = false;
+                    this.openErrorModal('delete your item');
                 });
         },
         editionStart (item) {
@@ -234,7 +242,6 @@ export default {
         },
         editionCanceled (event, item) {
             if (!this.editedItem) return;
-            console.log('cancel');
             this.editedItem = null;
         },
         updateItem (item) {
@@ -249,6 +256,7 @@ export default {
                     })
                     .catch(error => {
                         this.isLoading = false;
+                        this.openErrorModal('update your item');
                     });
             }
 
@@ -260,8 +268,9 @@ export default {
                     .then(response => {
                         this.items = response.data;
                     })
-                    .catch(error => {
-
+                    .catch(() => {
+                        this.isLoading = false;
+                        this.openErrorModal('refresh your shopping list');
                     });
             }
         },
@@ -274,8 +283,18 @@ export default {
                     this.getList();
                 })
                 .catch(error => {
-                    
+                    this.isLoading = false;
+                    this.openErrorModal('create your item');
                 });
+        },
+        openErrorModal (action) {
+            let content = {
+                title: 'Oooops something wrong happened!',
+                body: `We were not able to ${action}.`,
+                cancelCTA: 'Close'
+
+            };
+            this.$store.commit('setModalContent', content);
         }
     }
 };
