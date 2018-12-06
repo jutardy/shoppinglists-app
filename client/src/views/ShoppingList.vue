@@ -18,7 +18,7 @@
                         v-if="items.length > 0 && isMyList"
                         class="btn-link cursor-pointer"
                         tabindex
-                        @click="emptyList">Empty list.</a>
+                        @click="emptyListConfirmation">Empty list.</a>
                 </div>
                 <form
                     v-if="isMyList"
@@ -123,12 +123,14 @@ export default {
         }
     },
     created () {
-        this.$events.$on('updateListItem', this.updateItem);
+        this.$events.$on('emptyListEvent', this.emptyList);
         this.$events.$on('removeItemEvent', this.removeItem);
+        this.$events.$on('updateListItem', this.updateItem);
     },
     beforeDestroy () {
-        this.$events.$off('updateListItem', this.updateItem);
+        this.$events.$off('emptyListEvent', this.emptyList);
         this.$events.$off('removeItemEvent', this.removeItem);
+        this.$events.$off('updateListItem', this.updateItem);
     },
     methods: {
         initUser () {
@@ -182,15 +184,30 @@ export default {
         getItemIndex (string) {
             return this.items.findIndex(item => string.toLowerCase() === item.name.toLowerCase());
         },
-        emptyList () {
-            this.items = [];
-        },
         removeItem (item) {
             if (!this.listLoading) {
                 this.listLoading = true;
 
                 this.$http.delete('/items', {
                     data: { id: item._id }
+                })
+                    .then(response => {
+                        this.listLoading = false;
+                        this.$store.commit('closeModal');
+                        this.getList();
+                    })
+                    .catch(() => {
+                        this.listLoading = false;
+                        this.openErrorModal('delete your item');
+                    });
+            }
+        },
+        emptyList () {
+            if (!this.listLoading) {
+                this.listLoading = true;
+
+                this.$http.delete('/items/all', {
+                    data: { user: this.authUser._id }
                 })
                     .then(response => {
                         this.listLoading = false;
@@ -258,6 +275,16 @@ export default {
                 body: `We were not able to ${action}.`,
                 cancelCTA: 'Close'
 
+            };
+            this.$store.commit('setModalContent', content);
+        },
+        emptyListConfirmation () {
+            let content = {
+                title: 'You are about to empty your Shopping List.',
+                body: 'This process cannot be undone. Are you sure you want to proceed?',
+                submitCTA: 'Empty my list',
+                cancelCTA: 'Cancel',
+                submitEvent: 'emptyListEvent'
             };
             this.$store.commit('setModalContent', content);
         }

@@ -36,3 +36,11 @@ exports.deleteItem = function(req, res, next) {
             return res.status(500).json({error: error});
         });
 };
+
+exports.deleteList = function(req, res, next) {
+    ShoppingItem.deleteMany({ user: req.body.user })
+        .then(item => res.json(item))
+        .catch(error => {    
+            return res.status(500).json({error: error});
+        });
+};
