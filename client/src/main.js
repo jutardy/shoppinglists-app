@@ -1,7 +1,5 @@
-import './assets/fonts/font-awesome/css/font-awesome.min.css';
-import $ from 'jquery';
+import './assets/sass/app.scss';
 import 'bootstrap';
-import 'bootstrap/scss/bootstrap.scss';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';

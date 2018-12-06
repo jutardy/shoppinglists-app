@@ -16,6 +16,19 @@ exports.createItem = function(req, res, next) {
         });
 };
 
+exports.updateItem = function(req, res, next) {
+    let data = { 
+        name: req.body.name, 
+        updated_at: Date.now() 
+    };
+
+    ShoppingItem.findByIdAndUpdate(req.body._id, data)
+        .then(item => res.json(item))
+        .catch(error => {    
+            return res.status(500).json({error: error});
+        });
+};
+
 exports.deleteItem = function(req, res, next) {
     ShoppingItem.findByIdAndRemove(req.body.id)
         .then(item => res.json(item))

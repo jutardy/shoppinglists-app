@@ -23,11 +23,6 @@ export default {
     text-align: center;
     height: 100vh;
 }
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
 .form-control:focus {
     box-shadow: none;
 }
@@ -41,9 +36,6 @@ ul {
         background-position: center;
         height: 100%;
     }
-}
-.cursor-pointer {
-    cursor: pointer;
 }
 h1, h2, h3, h4, h5, h6 {
     font-weight: 300 !important;

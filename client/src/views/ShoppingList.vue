@@ -28,15 +28,15 @@
                 @submit.prevent="submitCreation"
             >
                 <div
-                    :class="{ active: isCreating }"
+                    :class="{ active: focusCreate }"
                     class="new-item-input-wrapper position-relative">
                     <input
                         class="input-new-item w-100 form-control"
                         type="text"
                         v-model.trim="newItem"
                         maxlength="100"
-                        @focus="isCreating=true"
-                        @blur="isCreating=false"
+                        @focus="focusCreate=true"
+                        @blur="focusCreate=false"
                         :placeholder="createPlaceholder">
                     <button
                         class="btn btn-new-item position-absolute cursor-pointer bg-white"
@@ -47,31 +47,55 @@
             </form>
 
             <div class="list-block">
-                <table
+                <ul
                     v-if="items.length > 0"
                     class="list-table w-100">
-                    <tr
+                    <li
                         v-for="(item, index) in items"
                         :key="index"
                         :data-index="index"
-                        class="list-row">
-                        <td class="actions-cell text-left">{{ item.name }}</td>
-                        <td
+                        :class="{'is-editing': editedItem !== null && editedItem._id === item._id}"
+                        class="list-row d-flex d-flex-row">
+                        <div class="text-cell text-left d-inline-block align-self-center">
+                            <span v-show="editedItem === null || editedItem._id !== item._id">
+                                {{ item.name }}
+                            </span>
+                            <input
+                                v-if="editedItem !== null && editedItem._id === item._id"
+                                class="input-edit-item w-100 form-control border-0 p-sides-10"
+                                type="text"
+                                v-model.trim="editedItem.name"
+                                maxlength="100"
+                                v-focus
+                                @blur="editionCanceled($event, item)"
+                                @keyup.enter="updateItem(item)"
+                                @keyup.esc="editionCanceled(item)">
+                        </div>
+                        <div
                             v-if="isMyList"
-                            class="actions-cell text-right">
+                            class="actions-cell text-left d-inline-block align-self-top">
                             <a
-                                class="btn-edit cursor-pointer"
-                                @click="updateItem(index)">
+                                v-show="editedItem === null || editedItem._id !== item._id"
+                                class="btn-edit cursor-pointer text-center"
+                                @click="editionStart(item)">
                                 <i class="fa fa fa-pencil" aria-hidden="true" />
                             </a>
                             <a
-                                class="btn-delete cursor-pointer"
+                                v-show="editedItem !== null && editedItem._id === item._id"
+                                class="btn-edit-done cursor-pointer text-center text-success"
+                                @mousedown.prevent
+                                @click="updateItem(item)">
+                                <i class="fa fa-check-circle" aria-hidden="true" />
+                            </a>
+                            <a
+                                v-show="editedItem === null || editedItem._id !== item._id"
+                                class="btn-delete cursor-pointer text-center"
                                 @click="removeConfirmation(item)">
                                 <i class="fa fa fa-times" aria-hidden="true" />
                             </a>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -82,13 +106,16 @@ export default {
     name: 'ShoppingList',
     data () {
         return {
+            canCancelEdition: true,
+            editedItem: null,
+            focusCreate: false,
+            formCreationScope: 'creationScope',
+            isLoading: false,
+            items: [],
+            newItem: '',
             title: '',
             user: null,
-            userNotFound: false,
-            formCreationScope: 'creationScope',
-            newItem: '',
-            items: [],
-            isCreating: false
+            userNotFound: false
         };
     },
     computed: {
@@ -111,17 +138,22 @@ export default {
             return this.items.length !== 1 ? `${this.items.length} items.` : '1 item.';
         }
     },
+    directives: {
+        focus: {
+            inserted (el) { el.focus(); }
+        }
+    },
     watch: {
         userId () {
             this.userNotFound = false;
-            !this.isMyList ? this.getUsername() : this.setTitle(this.authUser.username);
+            this.initUser();
         }
     },
     mounted () {
         if (!this.isLoggedIn && this.userId === null) {
             this.$router.push('/login');
         }
-        !this.isMyList ? this.getUsername() : this.setTitle(this.authUser.username);
+        this.initUser();
         this.getList();
     },
     created () {
@@ -131,6 +163,9 @@ export default {
         this.$events.$off('removeItemEvent', this.removeItem);
     },
     methods: {
+        initUser () {
+            !this.isMyList ? this.getUsername() : this.setTitle(this.authUser.username);
+        },
         getUsername () {
             this.userNotFound = false;
 
@@ -158,7 +193,7 @@ export default {
                 this.createItem();
                 this.newItem = '';
             } else {
-                var repeatedItem = document.querySelector(`tr[data-index="${repeatedIndex}"]`);
+                var repeatedItem = document.querySelector(`li[data-index="${repeatedIndex}"]`);
                 repeatedItem.classList.add('highlight');
                 setTimeout(function () {
                     repeatedItem.classList.remove('highlight');
@@ -183,7 +218,7 @@ export default {
             this.$store.commit('setModalContent', content);
         },
         removeItem (item) {
-            this.$http.delete('/items', { 
+            this.$http.delete('/items', {
                 data: { id: item._id }
             })
                 .then(response => {
@@ -194,8 +229,29 @@ export default {
 
                 });
         },
-        updateItem (index) {
-            console.log('edit');
+        editionStart (item) {
+            this.editedItem = { ...item };
+        },
+        editionCanceled (event, item) {
+            if (!this.editedItem) return;
+            console.log('cancel');
+            this.editedItem = null;
+        },
+        updateItem (item) {
+            if (!this.editedItem) return;
+            if (!this.editedItem.name !== item.name) {
+                this.isLoading = true;
+                this.$http.put('/items', this.editedItem)
+                    .then(response => {
+                        this.isLoading = false;
+                        this.editedItem = null;
+                        this.getList();
+                    })
+                    .catch(error => {
+                        this.isLoading = false;
+                    });
+            }
+
         },
         getList () {
             if (!this.userNotFound) {
@@ -218,7 +274,7 @@ export default {
                     this.getList();
                 })
                 .catch(error => {
-
+                    
                 });
         }
     }
@@ -243,34 +299,52 @@ export default {
         border: 1px solid #CCCCCE;
         border-radius: 6px;
         overflow: hidden;
+
+        .input-new-item {
+            padding: 12px 20px 12px 60px;
+            height: 60px;
+            border: 0;
+            display: inline;
+        }
+        .btn-new-item {
+            height: 60px;
+            width: 60px;
+            left: 0;
+            font-size: 24px;
+            background: none !important;
+            i { color: $blue; }
+            &:hover {
+                i { opacity: 0.6; }
+            }
+        }
         &.active {
-            border: 1px solid $input-focus-border-color;
+            border: 1px solid $blue;
+            .input-new-item { background-color: white !important; }
         }
      }
-    .input-new-item {
-        padding: 12px 20px 12px 60px;
-        height: 60px;
-        border: 0;
-        display: inline;
+
+    .list-row {
+        border-bottom: 1px solid $border-block;
+        min-height: 39px;
+        &.is-editing { padding: 0 !important; }
     }
-    .btn-new-item {
-        height: 60px;
-        width: 60px;
-        left: 0;
-        font-size: 24px;
-        i { color: $blue; }
-        &:hover {
-            i { opacity: 0.6; }
+    .text-cell {
+        width: calc(100% - 70px);
+        span { 
+            display: block; 
+            padding: 7px 0 7px 10px;
         }
     }
-    .list-row td {
-        border-bottom: 1px solid $border-block;
-            height: 40px;
-    }
-    .actions-cell a {
-        padding: 10px;
-        color: $input-focus-border-color;
-        &.btn-delete:hover { color: $red; }
+    .input-edit-item { background-color: rgba(255, 255, 255, 0.4) !important; }
+    .actions-cell {
+        width: 70px;
+        a {
+            padding: 7px 0 6px;
+            width: 35px;
+            color: $input-focus-border-color;
+            display: inline-block;
+            &.btn-delete:hover { color: $red; }
+        }
     }
     .highlight {
         animation-name: colorhighlight;
