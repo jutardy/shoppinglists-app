@@ -50,9 +50,12 @@
                     class="loading-overlay position-absolute w-100">
                     <Loader class="m-tb-50" />
                 </div>
-                <div class="ordering-row text-right mb-2">
+                <div
+                    v-if="items.length > 0"
+                    class="ordering-row text-right mb-2">
                     <ListOrderTab
                         v-for="(tab, index) in sortOptions"
+                        :class="{disabled: items.length==1, 'text-muted': !tab.active}"
                         :key="index"
                         :option="tab" />                    
                 </div>

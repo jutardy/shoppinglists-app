@@ -1,19 +1,18 @@
 <template>
     <a
         tabindex
-        :class="{'text-muted': !tab.active}"
         class="list-order-tab btn-link cursor-pointer d-inline-block"
         @click="tabClicked">
         {{ tab.label }}
-        <i 
+        <i
             v-show="!tab.active"
-            class="fa fa-sort" 
+            class="fa fa-sort"
             aria-hidden="true" />
-        <i 
+        <i
             v-show="tab.active && tab.order === 1"
-            class="fa fa-sort-up" 
+            class="fa fa-sort-up"
             aria-hidden="true" />
-        <i 
+        <i
             v-show="tab.active && tab.order === -1"
             class="fa fa-sort-desc hidden"
             aria-hidden="true" />
@@ -48,6 +47,11 @@ export default {
 
 <style lang="scss">
     .list-order-tab {
+        &.text-muted { color: $grey-disabled !important; }
+        &.disabled {
+            color: $link-disabled-color !important;
+            &:hover { cursor: not-allowed; }
+        }
         &:hover { text-decoration: none; }
     }
 </style>

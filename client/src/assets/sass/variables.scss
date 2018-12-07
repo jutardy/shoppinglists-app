@@ -4,6 +4,7 @@ $blue-light: #8AB0AB;
 $green-light: #A1CCA5;
 $grey-dark: #363537;
 $grey-light: #e6e6e8;
+$grey-disabled: #6c757d;
 $purple: #300032;
 $red: #c43235;
 $red-light: #C47577;
@@ -22,6 +23,7 @@ $theme-colors: (
   danger: $red
 );
 
+$link-disabled-color: #A2A2A2;
 $input-border-color: #CCCCCE;
 $input-focus-border-color: #999;
 $input-btn-focus-box-shadow: none;
