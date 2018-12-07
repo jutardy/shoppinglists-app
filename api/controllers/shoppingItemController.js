@@ -1,7 +1,7 @@
 import ShoppingItem from '../models/ShoppingItem';
 
 exports.getItems = function(req, res, next) {
-    ShoppingItem.find({ user: req.params.id })
+    ShoppingItem.find({ user: req.params.id }).sort('-created_at')
         .then(items => res.json(items))
         .catch(error => {    
             return res.status(500).json({error: error});

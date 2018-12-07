@@ -125,14 +125,15 @@ export default {
     created () {
         this.$events.$on('emptyListEvent', this.emptyList);
         this.$events.$on('removeItemEvent', this.removeItem);
-        this.$events.$on('updateListItem', this.updateItem);
+        this.$events.$on('updateListItem', this.onUpdateItem);
     },
     beforeDestroy () {
         this.$events.$off('emptyListEvent', this.emptyList);
         this.$events.$off('removeItemEvent', this.removeItem);
-        this.$events.$off('updateListItem', this.updateItem);
+        this.$events.$off('updateListItem', this.onUpdateItem);
     },
     methods: {
+        // INITIALIZATION METHODS
         initUser () {
             if (this.isMyList) {
                 this.setTitle(this.authUser.username);
@@ -166,13 +167,14 @@ export default {
         setTitle (username) {
             this.title = `${username}'s shopping list`;
         },
-        submitCreation () {
-            if (this.newItem === '') return;
-            const repeatedIndex = this.getItemIndex(this.newItem);
+
+        // GENERIC METHODS
+        checkExistingItem (str, callback) {
+            if (str === '') return;
+            const repeatedIndex = this.items.findIndex(item => str.toLowerCase() === item.name.toLowerCase());
 
             if (repeatedIndex === -1) {
-                this.createItem();
-                this.newItem = '';
+                callback();
             } else {
                 var repeatedItem = document.querySelector(`li[data-index="${repeatedIndex}"]`);
                 repeatedItem.classList.add('highlight');
@@ -181,8 +183,56 @@ export default {
                 }, 600);
             }
         },
-        getItemIndex (string) {
-            return this.items.findIndex(item => string.toLowerCase() === item.name.toLowerCase());
+        submitCreation () {
+            let callback = () => {
+                this.createItem();
+                this.newItem = '';
+            };
+            this.checkExistingItem(this.newItem, callback);
+        },
+        onUpdateItem (item) {
+            let callback = (updateItem) => {
+                this.updateItem(item);
+                this.$events.$emit('resetEditedItem');
+            };
+            this.checkExistingItem(item.name, callback);
+        },
+
+        // CRUD METHODS
+        getList (callback = null) {
+            if (!this.userNotFound && !this.listLoading) {
+                const uid = this.isMyList && this.userId === null ? this.authUser._id : this.userId;
+                this.listLoading = true;
+
+                this.$http.get(`/items/${uid}`)
+                    .then(response => {
+                        this.items = response.data;
+                        this.listLoading = false;
+                        if (callback) callback();
+                    })
+                    .catch(() => {
+                        this.listLoading = false;
+                        this.openErrorModal('refresh your shopping list');
+                    });
+            }
+        },
+        createItem () {
+            if (!this.listLoading) {
+                this.listLoading = true;
+
+                this.$http.post('/items', {
+                    user: this.authUser._id,
+                    name: this.newItem
+                })
+                    .then(response => {
+                        this.listLoading = false;
+                        this.getList();
+                    })
+                    .catch(() => {
+                        this.listLoading = false;
+                        this.openErrorModal('create your item');
+                    });
+            }
         },
         removeItem (item) {
             if (!this.listLoading) {
@@ -226,8 +276,9 @@ export default {
 
                 this.$http.put('/items', item)
                     .then(response => {
+                        let callback = () => this.$events.$emit('resetEditedItem');
                         this.listLoading = false;
-                        this.getList();
+                        this.getList(callback);
                     })
                     .catch(() => {
                         this.listLoading = false;
@@ -235,40 +286,8 @@ export default {
                     });
             }
         },
-        getList () {
-            if (!this.userNotFound && !this.listLoading) {
-                const uid = this.isMyList && this.userId === null ? this.authUser._id : this.userId;
-                this.listLoading = true;
 
-                this.$http.get(`/items/${uid}`)
-                    .then(response => {
-                        this.items = response.data;
-                        this.listLoading = false;
-                    })
-                    .catch(() => {
-                        this.listLoading = false;
-                        this.openErrorModal('refresh your shopping list');
-                    });
-            }
-        },
-        createItem () {
-            if (!this.listLoading) {
-                this.listLoading = true;
-
-                this.$http.post('/items', {
-                    user: this.authUser._id,
-                    name: this.newItem
-                })
-                    .then(response => {
-                        this.listLoading = false;
-                        this.getList();
-                    })
-                    .catch(() => {
-                        this.listLoading = false;
-                        this.openErrorModal('create your item');
-                    });
-            }
-        },
+        // FEEDBACK METHODS
         openErrorModal (action) {
             let content = {
                 title: 'Oooops something wrong happened!',

@@ -19,13 +19,11 @@ export default new Router({
         {
             path: '/register',
             name: 'Register',
-            // component: Register            
             component: () => import(/* webpackChunkName: "register" */ './views/Register.vue')
         },
         {
             path: '/login',
             name: 'Login',
-            // component: Login
             component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
         },
         {
@@ -38,8 +36,8 @@ export default new Router({
             name: 'Documentation',
             component: () => import(/* webpackChunkName: "documentation" */ './views/Documentation.vue')
         },
-        { 
-            path: "*",
+        {
+            path: '*',
             name: 'PageNotFound',
             component: () => import(/* webpackChunkName: "pagenotfound" */ './views/PageNotFound.vue') }
     ]

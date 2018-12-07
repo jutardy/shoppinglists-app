@@ -57,6 +57,12 @@ export default {
             inserted (el) { el.focus(); }
         }
     },
+    created () {
+        this.$events.$on('resetEditedItem', this.editionCanceled);
+    },
+    beforeDestroy () {
+        this.$events.$off('resetEditedItem', this.editionCanceled);
+    },
     methods: {
         editionStart () {
             this.editedItem = { ...this.item };
