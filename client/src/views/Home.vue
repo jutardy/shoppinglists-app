@@ -55,7 +55,7 @@
                                     v-for="(user, index) in lastUsers.data"
                                     :key="index"
                                     class="user-block">
-                                    <span class="fs-18">{{ user.username }}</span> created {{ user.numItems == 1 ? '1 item.' : `${user.numItems} items.`}} <router-link :to="`/shoppinglist/${user.id}`">Go to list</router-link>
+                                    <span class="fs-18">{{ user.username }}</span> created {{ user.numItems == 1 ? '1 item.' : `${user.numItems} items.`}} <router-link :to="`/shoppinglist/${user._id}`">Go to list</router-link>
                                 </div>
                             </div>
                         </div>
@@ -153,9 +153,9 @@ export default {
         h5 { margin: 0; }
     }
     .dashboard-block-body {
-        padding: 10px 20px;
+        padding: 5px 20px 12px;
         font-size: 15px;
-        height: 170px;
+        height: 175px;
     }
     .num {
         font-size: 72px;

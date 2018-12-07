@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import timestamps from 'mongoose-timestamp';
+// import timestamps from 'mongoose-timestamp';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -20,9 +20,17 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required!'],
         trim: true,
         minlength: [6, 'Password needs to be longer!']
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
     }
 }, { collection: 'users' });
 
-userSchema.plugin(timestamps);
+// userSchema.plugin(timestamps);
 
 export default mongoose.model('User', userSchema, 'users');
