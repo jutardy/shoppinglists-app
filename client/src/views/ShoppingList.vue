@@ -57,7 +57,7 @@
                         v-for="(tab, index) in sortOptions"
                         :class="{disabled: items.length==1, 'text-muted': !tab.active}"
                         :key="index"
-                        :option="tab" />                    
+                        :option="tab" />
                 </div>
                 <ul
                     v-if="items.length > 0"
@@ -231,8 +231,8 @@ export default {
             this.checkExistingItem(item.name, callback);
         },
         onListOrderChanged (changedTab) {
-            this.sortOptions.forEach(function (item) { 
-                item.active = false; 
+            this.sortOptions.forEach(function (item) {
+                item.active = false;
             });
             const activeIndex = this.sortOptions.findIndex(item => changedTab.label === item.label);
             this.sortOptions[activeIndex].active = true;
@@ -245,7 +245,7 @@ export default {
                 const uid = this.isMyList && this.userId === null ? this.authUser._id : this.userId;
                 this.listLoading = true;
 
-                this.$http.get(`/items/${uid}`, { 
+                this.$http.get(`/items/${uid}`, {
                     params: {
                         field: this.activeSortOption.field,
                         order: this.activeSortOption.order

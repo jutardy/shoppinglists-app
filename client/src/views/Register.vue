@@ -7,10 +7,11 @@
                 class="form-signin"
                 @submit.prevent="validateForm">
                 <input
-                    v-validate="'required'"
+                    v-validate="'required|min:2'"
                     v-model="username"
                     name="username"
                     type="text"
+                    maxlength="30"
                     class="form-control"
                     placeholder="Username">
                 <span

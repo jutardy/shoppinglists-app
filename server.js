@@ -6,6 +6,7 @@ import express from 'express';
 import mongoose   from 'mongoose';
 import logger  from 'morgan';
 import routesAuth from './api/routes/auth';
+import routesDashboard from './api/routes/dashboard';
 import routesItems from './api/routes/shoppingItems';
 import routesUsers from './api/routes/users';
 
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/api', routesAuth);
+app.use('/api/dashboard', routesDashboard);
 app.use('/api/items', routesItems);
 app.use('/api/users', routesUsers);
 
