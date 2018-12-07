@@ -50,6 +50,12 @@
                     class="loading-overlay position-absolute w-100">
                     <Loader class="m-tb-50" />
                 </div>
+                <div class="ordering-row text-right mb-2">
+                    <ListOrderTab
+                        v-for="(tab, index) in sortOptions"
+                        :key="index"
+                        :option="tab" />                    
+                </div>
                 <ul
                     v-if="items.length > 0"
                     class="list-table w-100">
@@ -67,6 +73,7 @@
 
 <script>
 import ListItem from '../components/ListItem.vue';
+import ListOrderTab from '../components/ListOrderTab.vue';
 import Loader from '../components/Loader.vue';
 import MessageBlock from '../components/MessageBlock.vue';
 
@@ -74,6 +81,7 @@ export default {
     name: 'ShoppingList',
     components: {
         ListItem,
+        ListOrderTab,
         Loader,
         MessageBlock
     },
@@ -86,7 +94,21 @@ export default {
             title: '',
             user: null,
             userLoading: false,
-            userNotFound: false
+            userNotFound: false,
+            sortOptions: [
+                {
+                    label: 'Created',
+                    active: true,
+                    order: -1,
+                    field: 'created_at'
+                },
+                {
+                    label: 'Name',
+                    active: false,
+                    order: 1,
+                    field: 'name'
+                }
+            ]
         };
     },
     computed: {
@@ -107,12 +129,18 @@ export default {
         },
         summary () {
             return this.items.length !== 1 ? `${this.items.length} items.` : '1 item.';
+        },
+        activeSortOption () {
+            return this.sortOptions.find(item => item.active === true);
         }
     },
     watch: {
         userId () {
             this.userNotFound = false;
             this.initUser();
+        },
+        activeSortOption () {
+            this.getList();
         }
     },
     mounted () {
@@ -124,11 +152,13 @@ export default {
     },
     created () {
         this.$events.$on('emptyListEvent', this.emptyList);
+        this.$events.$on('listOrderChanged', this.onListOrderChanged);
         this.$events.$on('removeItemEvent', this.removeItem);
         this.$events.$on('updateListItem', this.onUpdateItem);
     },
     beforeDestroy () {
         this.$events.$off('emptyListEvent', this.emptyList);
+        this.$events.$off('listOrderChanged', this.onListOrderChanged);
         this.$events.$off('removeItemEvent', this.removeItem);
         this.$events.$off('updateListItem', this.onUpdateItem);
     },
@@ -197,6 +227,14 @@ export default {
             };
             this.checkExistingItem(item.name, callback);
         },
+        onListOrderChanged (changedTab) {
+            this.sortOptions.forEach(function (item) { 
+                item.active = false; 
+            });
+            const activeIndex = this.sortOptions.findIndex(item => changedTab.label === item.label);
+            this.sortOptions[activeIndex].active = true;
+            this.sortOptions[activeIndex].order = changedTab.order;
+        },
 
         // CRUD METHODS
         getList (callback = null) {
@@ -204,7 +242,12 @@ export default {
                 const uid = this.isMyList && this.userId === null ? this.authUser._id : this.userId;
                 this.listLoading = true;
 
-                this.$http.get(`/items/${uid}`)
+                this.$http.get(`/items/${uid}`, { 
+                    params: {
+                        field: this.activeSortOption.field,
+                        order: this.activeSortOption.order
+                    }
+                })
                     .then(response => {
                         this.items = response.data;
                         this.listLoading = false;
@@ -349,5 +392,9 @@ export default {
     top: 0;
     z-index: 100;
     height:100%;
+}
+.ordering-row a {
+    margin-right: 20px;
+    &:last-of-type { margin-right: 0; }
 }
 </style>

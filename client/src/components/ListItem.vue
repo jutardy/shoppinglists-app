@@ -22,6 +22,7 @@
             class="actions-cell text-left d-inline-block align-self-top">
             <a
                 v-show="editedItem === null || editedItem._id !== item._id"
+                tabindex
                 class="btn-edit cursor-pointer text-center"
                 @click="editionStart">
                 <i class="fa fa fa-pencil" aria-hidden="true" />
@@ -29,6 +30,7 @@
             <a
                 v-show="editedItem !== null && editedItem._id === item._id"
                 class="btn-edit-done cursor-pointer text-center text-success"
+                tabindex
                 @mousedown.prevent
                 @click="editionDone">
                 <i class="fa fa-check-circle" aria-hidden="true" />
@@ -36,6 +38,7 @@
             <a
                 v-show="editedItem === null || editedItem._id !== item._id"
                 class="btn-delete cursor-pointer text-center"
+                tabindex
                 @click="deleteConfirmation">
                 <i class="fa fa fa-times" aria-hidden="true" />
             </a>
@@ -113,6 +116,7 @@ export default {
         width: 35px;
         color: $input-focus-border-color;
         display: inline-block;
+        &.btn-edit:hover { color: $body-color; }
         &.btn-delete:hover { color: $red; }
     }
 }
