@@ -11,6 +11,12 @@
                 v-show="!loading && !lastUsers.hasError"
                 class="w-100 align-self-center">
                 <div
+                    v-show="lastUsers.data.length === 0"
+                    class="w-100 align-self-center">
+                    <div class="num text-blue">0</div>
+                    <div class="data-label">recent users on the platform</div>
+                </div>
+                <div
                     v-for="(user, index) in lastUsers.data"
                     :key="index"
                     class="user-block">

@@ -7,13 +7,18 @@ exports.getItems = function(req, res) {
         .catch(error => res.status(500).json({error: error}));
 };
 exports.getLists = function(req, res) {
-    ShoppingItem.aggregate(
-        [
-            { $group: { _id : '$user' } },
-            { $count : 'numLists' }
-        ])
-        .then(result => res.json({ lists: result[0].numLists }))
-        .catch(error => res.status(500).json({error: error}));
+    ShoppingItem.countDocuments({}, function(err, docs) {
+        if (err) return res.status(500).json({error: err});
+        if (docs === 0) return res.json({ lists: 0 });
+        
+        ShoppingItem.aggregate(
+            [
+                { $group: { _id : '$user' } },
+                { $count : 'numLists' }
+            ])
+            .then(result => res.json({ lists: result[0].numLists }))
+            .catch(error => res.status(500).json({error: error})); 
+    });
 };
 exports.getUsers = function(req, res) {
     User.countDocuments({})
