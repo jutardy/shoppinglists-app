@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import MessageBlock from '../components/MessageBlock.vue';
+import MessageBlock from '../components/includes/MessageBlock.vue';
 
 export default {
     name: 'Login',

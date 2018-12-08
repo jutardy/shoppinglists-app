@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Nav from '@/components/Nav';
-import Modal from '@/components/Modal';
+import Nav from '@/components/includes/Nav';
+import Modal from '@/components/includes/Modal';
 
 export default {
     name: 'App',
@@ -29,13 +29,21 @@ export default {
 .page-container {
     height: calc(100% - 56px);
 
-    .view-container { padding-top: 60px; }
+    .view-container { 
+        padding-top: 60px; 
+        padding-bottom: 40px;
+    }
     .register-page, .login-page {
         background: url('./assets/images/background.jpg');
         background-size: cover;
         background-position: center;
         height: 100%;
     }
+}
+.block-shadow {
+    -webkit-box-shadow: 0px 8px 20px 0px rgba(212, 212, 212, 0.7);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(212, 212, 212, 0.7);
+    box-shadow: 0px 8px 20px 0px rgba(212, 212, 212, 0.7);
 }
 h1, h2, h3, h4, h5, h6 {
     font-weight: 300 !important;

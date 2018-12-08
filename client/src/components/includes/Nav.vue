@@ -53,7 +53,7 @@
                 <li class="nav-item ml-auto">
                     <span
                         v-if="isLoggedIn"
-                        class="nav-link">
+                        class="nav-link name-item">
                         Hi, {{ user.username }}!
                         <a
                             class="btn-link cursor-pointer"
@@ -94,7 +94,7 @@ export default {
     .navbar-light .navbar-nav {
         .nav-link {
             color: $black !important;
-            &:focus, &:hover { color: $blue !important; }
+            &:not(.name-item):focus, &:not(.name-item):hover { color: $blue !important; }
             &.router-link-exact-active { color: $blue !important; font-weight: bold;}
         }
     }

@@ -47,11 +47,12 @@ export default {
 
 <style lang="scss">
     .list-order-tab {
-        &.text-muted { color: $grey-disabled !important; }
+        color: white;
+        &.text-muted { color: #AFD5DE !important; }
         &.disabled {
-            color: $link-disabled-color !important;
+            color: #74B7C6 !important;
             &:hover { cursor: not-allowed; }
         }
-        &:hover { text-decoration: none; }
+        &:hover, &.text-muted:hover { color: white !important; text-decoration: none; }
     }
 </style>

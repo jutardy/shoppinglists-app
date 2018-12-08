@@ -22,10 +22,10 @@
                 </div>
                 <form
                     v-if="isMyList"
-                    class="form-creation mt-4 mb-4"
+                    class="form-creation mt-4"
                     @submit.prevent="submitCreation">
                     <div
-                        :class="{ active: focusCreate }"
+                        :class="{ active: focusCreate, 'block-shadow': focusCreate }"
                         class="new-item-input-wrapper position-relative">
                         <input
                             class="input-new-item w-100 form-control"
@@ -44,41 +44,44 @@
                 </form>
             </div>
 
-            <div class="list-block position-relative">
-                <div
-                    v-show="listLoading"
-                    class="loading-overlay position-absolute w-100">
-                    <Loader class="m-tb-50" />
-                </div>
-                <div
-                    v-if="items.length > 0"
-                    class="ordering-row text-right mb-2">
+            <div class="list-block mt-4 block-shadow">
+                <div class="list-header text-right">
                     <ListOrderTab
                         v-for="(tab, index) in sortOptions"
-                        :class="{disabled: items.length==1, 'text-muted': !tab.active}"
+                        :class="{disabled: items.length<2, 'text-muted': !tab.active}"
                         :key="index"
                         :option="tab" />
                 </div>
-                <ul
-                    v-if="items.length > 0"
-                    class="list-table w-100">
-                    <ListItem
-                        v-for="(item, index) in items"
-                        :item="item"
-                        :show-actions="isMyList"
-                        :key="index"
-                        :data-index="index" />
-                </ul>
+                <div class="list-body position-relative p-tb-10">
+                    <div
+                        v-show="listLoading"
+                        class="loading-overlay position-absolute w-100">
+                        <Loader
+                            :options="{size: '40px'}"
+                            class="align-self-center" />
+                    </div>
+                    <ul class="list-table">
+                        <li
+                            v-show="items.length === 0"
+                            class="no-items-yet text-muted text-left p-tb-5">{{ emptyListPlaceholder }}</li>
+                        <ListItem
+                            v-for="(item, index) in items"
+                            :item="item"
+                            :show-actions="isMyList"
+                            :key="index"
+                            :data-index="index" />
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import ListItem from '../components/ListItem.vue';
-import ListOrderTab from '../components/ListOrderTab.vue';
-import Loader from '../components/Loader.vue';
-import MessageBlock from '../components/MessageBlock.vue';
+import ListItem from '../components/shoppinglist/ListItem.vue';
+import ListOrderTab from '../components/shoppinglist/ListOrderTab.vue';
+import Loader from '../components/includes/Loader.vue';
+import MessageBlock from '../components/includes/MessageBlock.vue';
 
 export default {
     name: 'ShoppingList',
@@ -135,6 +138,9 @@ export default {
         },
         activeSortOption () {
             return this.sortOptions.find(item => item.active === true);
+        },
+        emptyListPlaceholder () {
+            return this.isMyList ? 'Start creating your shopping list!' : 'This shopping list is empty.';
         }
     },
     watch: {
@@ -365,7 +371,7 @@ export default {
 .new-item-input-wrapper {
     height: 60px;
     border: 1px solid #CCCCCE;
-    border-radius: 6px;
+    border-radius: 3px;
     overflow: hidden;
 
     .input-new-item {
@@ -390,14 +396,29 @@ export default {
         .input-new-item { background-color: white !important; }
     }
 }
+.list-block {
+    background: #EFEFF0;
+    border-radius: 3px;
+    overflow: hidden;
+
+    .list-header {
+        background: $blue;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        a {
+            margin-right: 20px;
+            &:last-of-type { margin-right: 0; }
+        }
+    }
+
+    .list-table { margin: 0 20px; }
+    li.list-row:last-of-type { border-bottom: 0; }
+}
 .loading-overlay {
+    display: flex;
     background: rgba(230, 230, 232, 0.8);
     top: 0;
     z-index: 100;
     height:100%;
-}
-.ordering-row a {
-    margin-right: 20px;
-    &:last-of-type { margin-right: 0; }
 }
 </style>

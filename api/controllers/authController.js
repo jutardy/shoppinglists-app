@@ -48,9 +48,5 @@ exports.login = function(req, res) {
                 }});
             });
         })
-        .catch(error => {
-            res.status(500).json({
-                error: error
-            });
-        });
+        .catch(error => res.status(500).json({error: error}));
 };

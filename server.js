@@ -9,6 +9,7 @@ import routesAuth from './api/routes/auth';
 import routesDashboard from './api/routes/dashboard';
 import routesItems from './api/routes/shoppingItems';
 import routesUsers from './api/routes/users';
+import { verifyJWTToken } from './api/libs/token';
 
 dotenv.config();
 
@@ -38,9 +39,9 @@ app.use(function (req, res, next) {
 });
 
 app.use('/api', routesAuth);
-app.use('/api/dashboard', routesDashboard);
-app.use('/api/items', routesItems);
-app.use('/api/users', routesUsers);
+app.use('/api/dashboard', verifyJWTToken, routesDashboard);
+app.use('/api/items', verifyJWTToken, routesItems);
+app.use('/api/users', verifyJWTToken, routesUsers);
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'});

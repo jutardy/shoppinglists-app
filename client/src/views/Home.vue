@@ -4,62 +4,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <div class="dashboard-block">
-                        <div class="dashboard-block-header bg-red">
-                            <h5><i class="fa fa-check-square-o m-r-10" />Items</h5>
-                        </div>
-                        <div class="dashboard-block-body d-flex flex-wrap align-items-center">
-                            <div class="w-100 align-self-center">
-                                <div class="num text-red">{{ items.data | numeral(items.data < 1000 ? '0a' : '0.0a') }}</div>
-                                <div class="data-label">{{ pluralize('items') }} ready to be bought</div>
-                            </div>
-                        </div>
-                    </div>
+                    <ItemsBlock :loading="items.isLoading" />
                 </div>
                 <div class="col-12 col-md-6">
-                    <div class="dashboard-block">
-                        <div class="dashboard-block-header bg-orange">
-                            <h5><i class="fa fa-list-ul m-r-10" />Lists</h5>
-                        </div>
-                        <div class="dashboard-block-body d-flex flex-wrap align-items-center">
-                            <div class="w-100 align-self-center">
-                                <div class="num text-orange">{{ lists.data | numeral(lists.data < 1000 ? '0a' : '0.0a') }}</div>
-                                <div class="data-label">{{ pluralize('lists') }} containing at least 1 item</div>
-                            </div>
-                        </div>
-                    </div>
+                    <ListsBlock :loading="lists.isLoading" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 col-md-6 ">
-                    <div class="dashboard-block">
-                        <div class="dashboard-block-header bg-purple">
-                            <h5><i class="fa fa-users m-r-10" />Users</h5>
-                        </div>
-                        <div class="dashboard-block-body d-flex flex-wrap align-items-center">
-                            <div class="w-100 align-self-center">
-                                <div class="num text-purple">{{ users.data | numeral(users.data < 1000 ? '0a' : '0.0a') }}</div>
-                                <div class="data-label">registered {{ pluralize('users') }} on the platform</div>
-                            </div>
-                        </div>
-                    </div>
+                    <UsersBlock :loading="users.isLoading" />
                 </div>
                 <div class="col-12 col-md-6">
-                    <div class="dashboard-block">
-                        <div class="dashboard-block-header bg-blue">
-                            <h5><i class="fa fa-user-plus m-r-10" />Recent Users</h5>
-                        </div>
-                        <div class="dashboard-block-body d-flex flex-wrap align-items-center">
-                            <div class="w-100 align-self-center">
-                                <div
-                                    v-for="(user, index) in lastUsers.data"
-                                    :key="index"
-                                    class="user-block">
-                                    <span class="fs-18">{{ user.username }}</span> created {{ user.numItems == 1 ? '1 item.' : `${user.numItems} items.`}} <router-link :to="`/shoppinglist/${user._id}`">Go to list</router-link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <LastUsersBlock :loading="lastUsers.isLoading" />
                 </div>
             </div>
         </div>
@@ -67,8 +23,19 @@
 </template>
 
 <script>
+import ItemsBlock from '../components/dashboard/ItemsBlock.vue';
+import ListsBlock from '../components/dashboard/ListsBlock.vue';
+import LastUsersBlock from '../components/dashboard/LastUsersBlock.vue';
+import UsersBlock from '../components/dashboard/UsersBlock.vue';
+
 export default {
     name: 'Home',
+    components: {
+        ItemsBlock,
+        ListsBlock,
+        LastUsersBlock,
+        UsersBlock
+    },
     data () {
         return {
             items: {
@@ -92,14 +59,11 @@ export default {
                 hasError: false
             }
         };
-    },    
+    },
     mounted () {
         this.getDashboardData();
     },
     methods: {
-        pluralize (model) {
-            return this[model].data === 1 ? model.slice(0, -1) : model;
-        },
         getDashboardData () {
             this.getBlockData('items');
             this.getBlockData('lists');
@@ -115,11 +79,15 @@ export default {
                 this.$http.get(`/dashboard/${endpoint}`)
                     .then(response => {
                         this[model].data = response.data[model];
-                        this.isLoading[model] = false;
+                        this[model].isLoading = false;
+                        this[model].hasError = false;
+                        this.$events.$emit(`${model}Updated`, this[model]);
                     })
                     .catch(() => {
+                        this[model].data = 0;
                         this[model].isLoading = false;
                         this[model].hasError = true;
+                        this.$events.$emit(`${model}Updated`, this[model]);
                     });
             }
         }
@@ -127,7 +95,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .home-page {
     .dashboard-block {
         display: block;
@@ -135,10 +103,6 @@ export default {
         border-radius: 3px;
         margin: 15px 0;
         overflow: hidden;
-        -webkit-box-shadow: 0px 8px 20px 0px rgba(212, 212, 212, 0.7);
-        -moz-box-shadow: 0px 8px 20px 0px rgba(212, 212, 212, 0.7);
-        box-shadow: 0px 8px 20px 0px rgba(212, 212, 212, 0.7);
-
     }
     .dashboard-block-header {
         text-align: left;
@@ -171,5 +135,10 @@ export default {
     .text-blue { color: $blue; }
     .text-purple { color: $purple; }
     .text-orange { color: $orange; }
+    .error-block i {
+        font-size: 48px;
+        margin-bottom: 10px;
+        color: #BDBDBE;
+    }
 }
 </style>
