@@ -117,6 +117,12 @@ export default {
             ]
         };
     },
+    sockets: {
+        UPDATE_LIST (isEditing = false) {
+            let callback = isEditing ? () => this.$events.$emit('resetEditedItem') : null;
+            this.getList(callback);
+        }
+    },
     computed: {
         isLoggedIn () {
             return this.$store.getters.isLoggedIn;
@@ -279,7 +285,7 @@ export default {
                     .then(response => {
                         this.listLoading = false;
                         this.$socket.emit('NUMBER_ITEMS_UPDATED', this.authUser._id);
-                        this.getList();
+                        this.$socket.emit('LIST_UPDATED');
                     })
                     .catch(() => {
                         this.listLoading = false;
@@ -297,8 +303,8 @@ export default {
                     .then(response => {
                         this.listLoading = false;
                         this.$store.commit('closeModal');
-                        // this.$socket.emit('NUMBER_ITEMS_UPDATED', { 'userid': this.authUser._id });
-                        this.getList();
+                        this.$socket.emit('NUMBER_ITEMS_UPDATED', this.authUser._id);
+                        this.$socket.emit('LIST_UPDATED');
                     })
                     .catch(() => {
                         this.listLoading = false;
@@ -316,8 +322,8 @@ export default {
                     .then(response => {
                         this.listLoading = false;
                         this.$store.commit('closeModal');
-                        this.$socket.emit('NUMBER_ITEMS_UPDATED');
-                        this.getList();
+                        this.$socket.emit('NUMBER_ITEMS_UPDATED', this.authUser._id);
+                        this.$socket.emit('LIST_UPDATED');
                     })
                     .catch(() => {
                         this.listLoading = false;
@@ -330,10 +336,9 @@ export default {
                 this.listLoading = true;
 
                 this.$http.put('/items', item)
-                    .then(response => {
-                        let callback = () => this.$events.$emit('resetEditedItem');
+                    .then(response => {                        
                         this.listLoading = false;
-                        this.getList(callback);
+                        this.$socket.emit('LIST_UPDATED', true);
                     })
                     .catch(() => {
                         this.listLoading = false;

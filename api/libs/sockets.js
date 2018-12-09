@@ -29,20 +29,20 @@ exports.listen = function(app) {
             let recentUsers = [];
             await getRecentUsers().then(users => {
                 if (users.length > 0) {
-                    recentUsers = users.map(user => user._id);
-                    console.log(recentUsers)
-                    if (recentUsers.includes(userid)) {
-                        console.log('include')
-                        dashboardBlocks.push('lastUsers');
-                    }
+                    recentUsers = users.map(user => user._id.toString());                    
                 }
-                console.log('emit')
-                io.emit('UPDATE_DASHBOARD', dashboardBlocks);
             });
+            if (recentUsers.includes(userid)) {
+                dashboardBlocks.push('lastUsers');
+            }
+            io.emit('UPDATE_DASHBOARD', dashboardBlocks);
         });
         socket.on('NEW_USER', () => {
             const dashboardBlocks = ['users', 'lastUsers'];
             io.emit('UPDATE_DASHBOARD', dashboardBlocks);
+        });
+        socket.on('LIST_UPDATED', (isEditing = false) => {
+            io.emit('UPDATE_LIST', isEditing);
         });
     });
 
