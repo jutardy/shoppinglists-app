@@ -99,6 +99,7 @@ export default {
                 })
                     .then(function (response) {
                         if (response && response.data && response.data._id) {
+                            this.$socket.emit('NEW_USER');
                             this.logUserIn();
                         }
                     }.bind(this))

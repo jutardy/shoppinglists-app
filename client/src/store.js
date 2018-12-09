@@ -16,7 +16,8 @@ export default new Vuex.Store({
             submitCTA: '',
             submitEvent: '',
             submitEventParam: null
-        }
+        },
+        recentUsers: []
     },
     mutations: {
         authenticate (state, res) {

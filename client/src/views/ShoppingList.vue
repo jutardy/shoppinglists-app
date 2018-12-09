@@ -278,6 +278,7 @@ export default {
                 })
                     .then(response => {
                         this.listLoading = false;
+                        this.$socket.emit('NUMBER_ITEMS_UPDATED', this.authUser._id);
                         this.getList();
                     })
                     .catch(() => {
@@ -296,6 +297,7 @@ export default {
                     .then(response => {
                         this.listLoading = false;
                         this.$store.commit('closeModal');
+                        // this.$socket.emit('NUMBER_ITEMS_UPDATED', { 'userid': this.authUser._id });
                         this.getList();
                     })
                     .catch(() => {
@@ -314,6 +316,7 @@ export default {
                     .then(response => {
                         this.listLoading = false;
                         this.$store.commit('closeModal');
+                        this.$socket.emit('NUMBER_ITEMS_UPDATED');
                         this.getList();
                     })
                     .catch(() => {

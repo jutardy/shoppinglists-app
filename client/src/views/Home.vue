@@ -60,6 +60,13 @@ export default {
             }
         };
     },
+    sockets: {
+        UPDATE_DASHBOARD (data) {
+            data.forEach(model => {
+                this.getBlockData(model);
+            });
+        }
+    },
     mounted () {
         this.getDashboardData();
     },

@@ -29,8 +29,8 @@ export default {
 .page-container {
     height: calc(100% - 56px);
 
-    .view-container { 
-        padding-top: 60px; 
+    .view-container {
+        padding-top: 60px;
         padding-bottom: 40px;
     }
     .register-page, .login-page {

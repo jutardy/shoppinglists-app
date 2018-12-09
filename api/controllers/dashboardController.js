@@ -41,7 +41,7 @@ exports.getLastUsers = function(req, res) {
                 'username': 1,                
                 'numItems': { $size: '$items' }
             } },        
-        ])
+        ]).exec()
         .then(result => res.json({ lastUsers: result }))
         .catch(error => res.status(500).json({error: error}));
 };
