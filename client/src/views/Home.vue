@@ -126,7 +126,7 @@ export default {
     .dashboard-block-body {
         padding: 5px 20px 12px;
         font-size: 15px;
-        height: 175px;
+        min-height: 175px;
     }
     .num {
         font-size: 72px;
@@ -137,6 +137,12 @@ export default {
         font-weight: 300;
         font-size: 22px;
         line-height: 1.8;
+        @media #{$xxs-max} {
+            font-weight: normal;
+            font-size: 17px;
+            line-height: 1.3;
+            padding-top: 5px;
+        }
     }
     .text-red { color: $red; }
     .text-blue { color: $blue; }
@@ -146,6 +152,10 @@ export default {
         font-size: 48px;
         margin-bottom: 10px;
         color: #BDBDBE;
+    }
+
+    @media #{$xxs-max} {
+        h1 { font-size: 32px; margin-bottom: 20px !important; }
     }
 }
 </style>

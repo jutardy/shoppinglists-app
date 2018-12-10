@@ -64,3 +64,12 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+.last-users-block {
+    .user-block { 
+        line-height: 1.2;
+        padding: 3px 0;
+    }
+}
+</style>

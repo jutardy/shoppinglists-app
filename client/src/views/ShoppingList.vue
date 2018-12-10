@@ -336,7 +336,7 @@ export default {
                 this.listLoading = true;
 
                 this.$http.put('/items', item)
-                    .then(response => {                        
+                    .then(response => {
                         this.listLoading = false;
                         this.$socket.emit('LIST_UPDATED', true);
                     })
@@ -375,6 +375,10 @@ export default {
 .list-content {
     width: 500px;
     margin: 0 auto;
+    @media #{$xxs-max} {
+        width: 100%;
+        h1 { font-size: 26px; }
+    }
 }
 .new-item-input-wrapper {
     height: 60px;

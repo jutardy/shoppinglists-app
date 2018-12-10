@@ -50,7 +50,7 @@
                         class="nav-link"
                         to="/register">Register</router-link>
                 </li>
-                <li class="nav-item ml-auto">
+                <li class="nav-item ml-lg-auto">
                     <span
                         v-if="isLoggedIn"
                         class="nav-link name-item">
@@ -96,6 +96,17 @@ export default {
             color: $black !important;
             &:not(.name-item):focus, &:not(.name-item):hover { color: $blue !important; }
             &.router-link-exact-active { color: $blue !important; font-weight: bold;}
+        }
+    }
+    button.navbar-toggler:focus { outline: 0; }
+    @media #{$sm-max} {
+        .navbar-collapse { 
+            margin: 8px -16px 0; background: #2A2A2B; z-index: 1000; 
+        }
+        .navbar-light .navbar-nav .nav-link {
+            color: white !important;
+            text-align: left;
+            padding-left: 15px;
         }
     }
 </style>

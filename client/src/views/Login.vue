@@ -145,6 +145,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.login-page {
     .login-block {
         border: 1px solid $border-block;
         border-radius: 6px;
@@ -152,5 +153,9 @@ export default {
         width: 500px;
         padding: 20px;
         margin: 0 auto;
+        @media #{$xxs-max} {
+            width: 100%;            
+        }
     }
+}
 </style>
