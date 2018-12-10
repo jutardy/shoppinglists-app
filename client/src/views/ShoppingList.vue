@@ -19,6 +19,10 @@
                         class="btn-link cursor-pointer"
                         tabindex
                         @click="emptyListConfirmation">Empty list.</a>
+                    <span class="num-visits m-l-10">
+                        <i class="fa fa-eye m-r-5" aria-hidden="true" />
+                        <span>{{ numVisitors }}</span> {{ numVisitorsLabel }} 
+                    </span>
                 </div>
                 <form
                     v-if="isMyList"
@@ -97,6 +101,7 @@ export default {
             items: [],
             listLoading: false,
             newItem: '',
+            numVisitors: 0,
             title: '',
             user: null,
             userLoading: false,
@@ -121,6 +126,10 @@ export default {
         UPDATE_LIST (isEditing = false) {
             let callback = isEditing ? () => this.$events.$emit('resetEditedItem') : null;
             this.getList(callback);
+        },
+        UPDATE_LIST_COUNTER (numVisits) {
+            console.log('numVisits', numVisits)
+            this.numVisitors = numVisits;
         }
     },
     computed: {
@@ -147,6 +156,9 @@ export default {
         },
         emptyListPlaceholder () {
             return this.isMyList ? 'Start creating your shopping list!' : 'This shopping list is empty.';
+        },
+        numVisitorsLabel () {
+            return this.numVisitors === 1 ? 'view!' : 'views!';
         }
     },
     watch: {
@@ -163,7 +175,8 @@ export default {
             this.$router.push('/login');
         } else {
             this.initUser();
-        }
+        }        
+        this.updateListCounter();
     },
     created () {
         this.$events.$on('emptyListEvent', this.emptyList);
@@ -211,6 +224,11 @@ export default {
         },
         setTitle (username) {
             this.title = `${username}'s shopping list`;
+        },
+        updateListCounter () {
+            const listId = this.userId === null ? this.authUser._id : this.userId;
+            const viewerId = this.isLoggedIn ? this.authUser._id : null;
+            this.$socket.emit('VIEW_LIST', listId, viewerId);
         },
 
         // GENERIC METHODS
