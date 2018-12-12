@@ -1,5 +1,6 @@
-import User from '../models/User';
 import ShoppingItem from '../models/ShoppingItem';
+import User from '../models/User';
+import UserController from '../controllers/UserController';
 
 exports.getItems = function(req, res) {
     ShoppingItem.countDocuments({})
@@ -26,22 +27,7 @@ exports.getUsers = function(req, res) {
         .catch(error => res.status(500).json({error: error}));
 };
 exports.getLastUsers = function(req, res) {
-    User.aggregate(
-        [
-            { $sort: { 'created_at': -1 } },
-            { $limit: 5 },
-            { $lookup: {
-                'from': 'items',
-                'localField': '_id',
-                'foreignField': 'user',
-                'as': 'items'
-            } },           
-            { '$project': {
-                '_id': 1,
-                'username': 1,                
-                'numItems': { $size: '$items' }
-            } },        
-        ]).exec()
+    UserController.getRecentUsers()
         .then(result => res.json({ lastUsers: result }))
         .catch(error => res.status(500).json({error: error}));
 };

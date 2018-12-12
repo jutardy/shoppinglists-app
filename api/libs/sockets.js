@@ -1,51 +1,6 @@
 import socket from 'socket.io';
-import User from '../models/User';
-
-const visits = {};
-
-const getRecentUsers = () => {
-    return User.aggregate(
-        [
-            { $sort: { 'created_at': -1 } },
-            { $limit: 5 },
-            { $lookup: {
-                'from': 'items',
-                'localField': '_id',
-                'foreignField': 'user',
-                'as': 'items'
-            } },           
-            { '$project': {
-                '_id': 1,
-                'username': 1,                
-                'numItems': { $size: '$items' }
-            } },        
-        ]).exec();
-};
-
-const getVisits = (listId) => {
-    let numVisits = 0;
-    if (visits.hasOwnProperty(listId)) {
-        let numUsers = new Set(visits[listId].users).size;
-        numVisits = visits[listId].guests + numUsers;
-    }   
-    return numVisits;
-};
-
-const updateVisits = (listId, userId = null) => {
-    if (!visits.hasOwnProperty(listId)) {
-        visits[listId] = { guests: 0, users: [] };
-    }
-    userId === null ? visits[listId].guests++ : visits[listId].users.push(userId);
-};
-
-const leavePage = (listId, userId = null) => {
-    if (userId === null) { 
-        visits[listId].guests--;
-    } else if (visits[listId].users.length > 0 && visits[listId].users.includes(userId)) {
-        let index = visits[listId].users.indexOf(userId);
-        visits[listId].users.splice(index, 1);
-    }
-};
+import userController from '../controllers/userController';
+import visits from './visits';
 
 exports.listen = function(app) {
     const io = socket(app);
@@ -54,7 +9,7 @@ exports.listen = function(app) {
         socket.on('NUMBER_ITEMS_UPDATED', async (userid) => {
             const dashboardBlocks = ['items', 'lists'];
             let recentUsers = [];
-            await getRecentUsers().then(users => {
+            await userController.getRecentUsers().then(users => {
                 if (users.length > 0) {
                     recentUsers = users.map(user => user._id.toString());                    
                 }
@@ -75,8 +30,8 @@ exports.listen = function(app) {
         });
 
         socket.on('VIEW_LIST', (listId, userId) => { 
-            updateVisits(listId, userId);
-            let numVisits = getVisits(listId);
+            visits.updateVisits(listId, userId);
+            let numVisits = visits.getVisits(listId);
             socket.join(listId, () => {
                 socket.room = { listId : Object.keys(socket.rooms)[1], userId: userId };
             });
@@ -87,10 +42,10 @@ exports.listen = function(app) {
             if (socket.room) {
                 let listId = socket.room.listId;
                 let userId = socket.room.userId;
-                leavePage(listId, userId);
-                let numVisits = getVisits(listId);
+                visits.leavePage(listId, userId);
+                let numVisits = visits.getVisits(listId);
                 socket.to(listId).emit('UPDATE_LIST_COUNTER', numVisits);
-                if (numVisits === 0) delete visits[listId];
+                if (numVisits === 0) delete visits.storage[listId];
             }
         });        
     });
