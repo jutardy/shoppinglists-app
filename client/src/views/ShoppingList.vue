@@ -21,7 +21,7 @@
                         @click="emptyListConfirmation">Empty list.</a>
                     <span class="num-visits m-l-10">
                         <i class="fa fa-eye m-r-5" aria-hidden="true" />
-                        <span>{{ numVisitors }}</span> {{ numVisitorsLabel }} 
+                        <span>{{ numVisitors }}</span> {{ numVisitorsLabel }}
                     </span>
                 </div>
                 <form
@@ -128,7 +128,6 @@ export default {
             this.getList(callback);
         },
         UPDATE_LIST_COUNTER (numVisits) {
-            console.log('numVisits', numVisits)
             this.numVisitors = numVisits;
         }
     },
@@ -175,7 +174,7 @@ export default {
             this.$router.push('/login');
         } else {
             this.initUser();
-        }        
+        }
         this.updateListCounter();
     },
     created () {
