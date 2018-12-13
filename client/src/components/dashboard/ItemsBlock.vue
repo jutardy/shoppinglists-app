@@ -9,7 +9,7 @@
                 :options="{ color: '#c43235', border: '6px'}" />
             <div
                 v-show="!loading && !items.hasError"
-                class="w-100 align-self-center">
+                class="w-100 align-self-center data-block">
                 <div class="num text-red">{{ items.data | numeral(items.data < 1000 ? '0a' : '0.0a') }}</div>
                 <div class="data-label">{{ itemsPluralized }} ready to be bought</div>
             </div>
