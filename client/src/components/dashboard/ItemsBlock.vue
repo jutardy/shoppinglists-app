@@ -10,7 +10,7 @@
             <div
                 v-show="!loading && !items.hasError"
                 class="w-100 align-self-center data-block">
-                <div class="num text-red">{{ items.data | numeral(items.data < 1000 ? '0a' : '0.0a') }}</div>
+                <div class="num text-red">{{ items.data | numeral(numeralFormat) }}</div>
                 <div class="data-label">{{ itemsPluralized }} ready to be bought</div>
             </div>
             <div
@@ -49,6 +49,9 @@ export default {
     computed: {
         itemsPluralized () {
             return this.items.data === 1 ? 'item' : 'items';
+        },
+        numeralFormat () {
+            return this.items.data < 1000 ? '0a' : '0.0a';
         }
     },
     methods: {

@@ -20,7 +20,7 @@ Vue.prototype.$http.interceptors.request.use(
 Vue.prototype.$http.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status && error.response.status === 401 && 
+        if (error.response && error.response.status && error.response.status === 401 &&
             error.response.data && error.response.data.code && error.response.data.code === 35) {
             localStorage.removeItem('token');
             localStorage.removeItem('authUser');

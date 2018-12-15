@@ -33,7 +33,7 @@ export default {
         padding-top: 60px;
         padding-bottom: 40px;
         @media #{$xxs-max} {
-            padding: 40px 15px;        
+            padding: 40px 15px;
         }
     }
     .register-page, .login-page {

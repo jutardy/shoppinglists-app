@@ -10,7 +10,7 @@
             <div
                 v-show="!loading && !users.hasError"
                 class="w-100 align-self-center">
-                <div class="num text-purple">{{ users.data | numeral(users.data < 1000 ? '0a' : '0.0a') }}</div>
+                <div class="num text-purple">{{ users.data | numeral(numeralFormat) }}</div>
                 <div class="data-label">registered {{ usersPluralized }} on the platform</div>
             </div>
             <div
@@ -49,6 +49,9 @@ export default {
     computed: {
         usersPluralized () {
             return this.users.data === 1 ? 'user' : 'users';
+        },
+        numeralFormat () {
+            return this.users.data < 1000 ? '0a' : '0.0a';
         }
     },
     methods: {

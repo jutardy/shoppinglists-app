@@ -100,8 +100,8 @@ export default {
     }
     button.navbar-toggler:focus { outline: 0; }
     @media #{$sm-max} {
-        .navbar-collapse { 
-            margin: 8px -16px 0; background: #2A2A2B; z-index: 1000; 
+        .navbar-collapse {
+            margin: 8px -16px 0; background: #2A2A2B; z-index: 1000;
         }
         .navbar-light .navbar-nav .nav-link {
             color: white !important;

@@ -10,7 +10,7 @@
             <div
                 v-show="!loading && !lists.hasError"
                 class="w-100 align-self-center">
-                <div class="num text-orange">{{ lists.data | numeral(lists.data < 1000 ? '0a' : '0.0a') }}</div>
+                <div class="num text-orange">{{ lists.data | numeral(numeralFormat) }}</div>
                 <div class="data-label">{{ listsPluralized }} containing at least 1 item</div>
             </div>
             <div
@@ -49,6 +49,9 @@ export default {
     computed: {
         listsPluralized () {
             return this.lists.data === 1 ? 'list' : 'lists';
+        },
+        numeralFormat () {
+            return this.lists.data < 1000 ? '0a' : '0.0a';
         }
     },
     methods: {

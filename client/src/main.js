@@ -9,18 +9,12 @@ import vueNumeralFilter from 'vue-numeral-filter';
 import VueSocketio from 'vue-socket.io';
 import './api';
 
-
 Vue.config.productionTip = false;
 Vue.use(VeeValidate);
 Vue.use(vueNumeralFilter, { locale: 'en-gb' });
 Vue.use(new VueSocketio({
     debug: true,
-    connection: 'http://localhost:4000',
-    // vuex: {
-    //     store,
-    //     actionPrefix: 'SOCKET_',
-    //     mutationPrefix: 'SOCKET_'
-    // }
+    connection: 'http://localhost:4000'
 }));
 
 const eventBus = new Vue();

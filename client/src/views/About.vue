@@ -40,6 +40,10 @@ export default {
     padding: 30px;
     border-radius: 3px;
 
+    @media #{$xxs-max} {
+        width: 100%;
+    }
+
     .card-info {
         h4 {
             color: $blue;

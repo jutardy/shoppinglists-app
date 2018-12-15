@@ -1,6 +1,6 @@
 import ShoppingItem from '../models/ShoppingItem';
 import User from '../models/User';
-import UserController from '../controllers/UserController';
+import UserController from '../controllers/userController';
 
 exports.getItems = function(req, res) {
     ShoppingItem.countDocuments({})

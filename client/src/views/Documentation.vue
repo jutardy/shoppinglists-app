@@ -2,7 +2,7 @@
     <div class="documentation-page view-container container">
         <h1 class="m-b-50">Documentation Page</h1>
         <nav class="nav nav-pills m-b-30 cursor-pointer">
-            <a 
+            <a
                 v-for="(tab, index) in tabs"
                 :key="index"
                 :class="{ active : index==activeTab }"
@@ -25,14 +25,14 @@ export default {
     name: 'Documentation',
     data () {
         return {
-            tabs: [ 
+            tabs: [
                 { label: 'Overview', component: Overview },
                 { label: 'Backend', component: Backend },
                 { label: 'Frontend', component: Frontend },
                 { label: 'Deployment and other instructions', component: Deployment }
             ],
             activeTab: 0
-        }
+        };
     },
     mounted () {
 
@@ -41,17 +41,18 @@ export default {
 </script>
 
 <style lang="scss">
-.doc-body { 
-    background: #EFEFF0; 
+.doc-body {
+    background: #EFEFF0;
     padding: 20px;
     border-radius: 3px;
 
     p { margin-bottom: 10px !important; }
     h5 { font-weight: 600 !important; }
-    ul.doc-list { 
+    ul.doc-list {
         margin-left: 40px;
-        list-style: circle; 
-        li { list-style-type: circle; } 
+        list-style: circle;
+        li { list-style-type: circle; }
     }
+    b { font-weight: 600; }
 }
 </style>

@@ -4,6 +4,7 @@ import config from './api/libs/config';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import history from 'connect-history-api-fallback';
 import logger  from 'morgan';
 import mongoose   from 'mongoose';
 import routesAuth from './api/routes/auth';
@@ -23,6 +24,7 @@ mongoose.connect(config.DB, config.OPTIONS)
 const app = express();
 
 app.use(cors());
+app.use(history());
 app.use(logger('dev'));
 
 app.use(express.static('client/dist'));

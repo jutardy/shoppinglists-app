@@ -153,8 +153,9 @@ export default {
         width: 500px;
         padding: 20px;
         margin: 0 auto;
+
         @media #{$xxs-max} {
-            width: 100%;            
+            width: 100%;
         }
     }
 }
