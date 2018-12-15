@@ -53,7 +53,7 @@ app.use((req, res) => {
     res.status(404).send({url: req.originalUrl + ' not found'});
 });
 
-const port = process.env.APP_PORT || 4000;
+const port = process.env.APP_PORT || 3000;
 const server = app.listen(port, () => {
     console.log('Listening');
 });

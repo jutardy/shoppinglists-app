@@ -3,7 +3,7 @@ import Vue from 'vue';
 
 Vue.prototype.$http = axios;
 Vue.prototype.$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-Vue.prototype.$http.defaults.baseURL = 'http://localhost:4000/api';
+Vue.prototype.$http.defaults.baseURL = 'http://18.184.106.119:3000/api';
 
 Vue.prototype.$http.interceptors.request.use(
     (config) => {

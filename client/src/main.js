@@ -14,7 +14,7 @@ Vue.use(VeeValidate);
 Vue.use(vueNumeralFilter, { locale: 'en-gb' });
 Vue.use(new VueSocketio({
     debug: true,
-    connection: 'http://localhost:4000'
+    connection: 'http://18.184.106.119:3000'
 }));
 
 const eventBus = new Vue();
