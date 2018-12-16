@@ -4,8 +4,9 @@
         <h5>Arquitecture</h5>
         <ul class="doc-list">
             <li>Having chosen <b>Vue.js as the Frontend framework</b>, the whole client project has been created based on <b>Vue/Cli 3</b>.</li>
+            <li>The <b>/src/main.js</b> is what renders our root vue component which is<b> /src/App.vue</b> and mounts it to the DOM. The main.js file creates the root vue instance and attaches the use of plugins such as router, store, validation, etc... Other js modules or libraries and our custom css are also imported in this file.</li>
             <li><b>Single-file vue components:</b> The parent components for each view are located in /src/views and their children components in /src/components.</li>
-            <li>A <b>global state of the application</b> is handled by the <b>Vuex</b> library. The /store.js contains the mutations, actions and getters that can be used in all the components. Some of the cases are the login/logout processes, save the logged user info in the global state, trigger a modal popup, etc...</li>
+            <li>A <b>global state of the application</b> is handled by the <b>Vuex</b> library. The /src/store.js contains the mutations, actions and getters that can be used in all the components. Some of the cases are the login/logout processes, save the logged user info in the global state, trigger a modal popup, etc...</li>
         </ul>
         <h5 class="m-t-20">Routes</h5>
         <ul class="doc-list">
