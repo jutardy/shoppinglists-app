@@ -24,15 +24,7 @@ mongoose.connect(config.DB, config.OPTIONS)
 const app = express();
 
 app.use(cors());
-app.use(history());
 app.use(logger('dev'));
-
-app.use(express.static('client/dist'));
-app.get('/', function (req, res) {
-    res.render('./client/dist/index.html', function(err, html) {
-        res.send(html);
-    });
-});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -48,6 +40,14 @@ app.use('/api', routesAuth);
 app.use('/api/dashboard', verifyJWTToken, routesDashboard);
 app.use('/api/items', verifyJWTToken, routesItems);
 app.use('/api/users', verifyJWTToken, routesUsers);
+
+app.use(history());
+app.use(express.static('client/dist'));
+app.get('/', function (req, res) {
+    res.render('./client/dist/index.html', function(err, html) {
+        res.send(html);
+    });
+});
 
 app.use((req, res) => {
     res.status(404).send({url: req.originalUrl + ' not found'});

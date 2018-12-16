@@ -15,7 +15,8 @@
         <ul class="doc-list">
             <li>Token creation and verification is handled by the <b>jsonwebtoken</b> library.</li>
             <li><b>Token Verification</b> method is used as a <b>middleware</b> for all routes excepted authentication ones.</li>
-            <li>Cretion and verification methods are located at api/libs/token.js</li>
+            <li>Creation and verification methods are located at api/libs/token.js</li>
+            <li><b>Token expiration</b> is by default 1 day but if the user logs in the app having checked the Remember me box, it will be set to 14 days.</li>
         </ul>
         <h5 class="m-t-20">Sockets</h5>
         <ul class="doc-list">

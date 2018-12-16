@@ -24,7 +24,11 @@
             <li>Http requests are handled by the <b>axios</b> library. Our main configuration is defined at <b>/api.js</b> file.</li>
             <li>The <b>$http method</b> within the Vue prototype will allow the use of axios inside all our vue components.</li>
             <li>An interceptor is used to <b>inject the token</b> in the header of all the requests.</li>
-            <li>An interceptor is used to <b>handle the expired session</b> for all the responses.</li>
+            <li>An interceptor is used to <b>handle the expired session</b> for all the responses. In case of an expired session, the user will be logged out and redirected to the login page with an expired session feedback.</li>
+        </ul>
+        <h5 class="m-t-20">Validation</h5>
+        <ul class="doc-list">
+            <li>Form validation is handled by the <b>vee-validate</b> npm library.</li>
         </ul>
         <h5 class="m-t-20">Tests</h5>
         <ul class="doc-list">
