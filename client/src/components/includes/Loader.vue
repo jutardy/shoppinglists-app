@@ -12,7 +12,7 @@ export default {
         return {
             size: this.options && this.options.size ? this.options.size : '50px',
             border: this.options && this.options.border ? this.options.border : '4px',
-            color: this.options && this.options.color ? this.options.color : '#258EA6',
+            color: this.options && this.options.color ? this.options.color : '#258EA6'
         };
     },
     computed: {

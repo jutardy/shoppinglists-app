@@ -2,6 +2,13 @@ import socket from 'socket.io';
 import userController from '../controllers/userController';
 import visits from './visits';
 
+const updateOnLeave = (listId, userId) => {
+    visits.leavePage(listId, userId);
+    let numVisits = visits.getVisits(listId);
+    if (numVisits === 0) delete visits.storage[listId];
+    return numVisits;
+};
+
 exports.listen = function(app) {
     const io = socket(app);
 
@@ -38,14 +45,21 @@ exports.listen = function(app) {
             io.to(listId).emit('UPDATE_LIST_COUNTER', numVisits);
         });
 
+        socket.on('LEAVE_LIST', (listId, userId) => { 
+            socket.leave(listId, () => {
+                let numVisits = updateOnLeave(listId, userId);
+                socket.to(listId).emit('UPDATE_LIST_COUNTER', numVisits);
+            });
+        });
+
         socket.on('disconnect', () => {
             if (socket.room) {
                 let listId = socket.room.listId;
                 let userId = socket.room.userId;
-                visits.leavePage(listId, userId);
-                let numVisits = visits.getVisits(listId);
-                socket.to(listId).emit('UPDATE_LIST_COUNTER', numVisits);
-                if (numVisits === 0) delete visits.storage[listId];
+                socket.leave(listId, () => {
+                    let numVisits = updateOnLeave(listId, userId);
+                    socket.to(listId).emit('UPDATE_LIST_COUNTER', numVisits);
+                });
             }
         });        
     });

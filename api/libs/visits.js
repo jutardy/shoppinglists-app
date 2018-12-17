@@ -17,11 +17,13 @@ const updateVisits = (listId, userId = null) => {
 };
 
 const leavePage = (listId, userId = null) => {
-    if (userId === null) { 
-        storage[listId].guests--;
-    } else if (storage[listId].users.length > 0 && storage[listId].users.includes(userId)) {
-        let index = storage[listId].users.indexOf(userId);
-        storage[listId].users.splice(index, 1);
+    if (storage.hasOwnProperty(listId)) {
+        if (userId === null) { 
+            storage[listId].guests--;
+        } else if (storage[listId].users.length > 0 && storage[listId].users.includes(userId)) {
+            let index = storage[listId].users.indexOf(userId);
+            storage[listId].users.splice(index, 1);
+        }
     }
 };
 

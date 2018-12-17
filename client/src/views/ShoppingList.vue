@@ -158,6 +158,12 @@ export default {
         },
         numVisitorsLabel () {
             return this.numVisitors === 1 ? 'view!' : 'views!';
+        },
+        listId () {
+            return this.isLoggedIn && this.userId === null ? this.authUser._id : this.userId;
+        },
+        viewerId () {
+            return this.isLoggedIn ? this.authUser._id : null;
         }
     },
     watch: {
@@ -175,7 +181,7 @@ export default {
         } else {
             this.initUser();
         }
-        this.updateListCounter();
+        this.$socket.emit('VIEW_LIST', this.listId, this.viewerId);
     },
     created () {
         this.$events.$on('emptyListEvent', this.emptyList);
@@ -188,6 +194,14 @@ export default {
         this.$events.$off('listOrderChanged', this.onListOrderChanged);
         this.$events.$off('removeItemEvent', this.removeItem);
         this.$events.$off('updateListItem', this.onUpdateItem);
+    },
+    beforeRouteLeave (to, from, next) {
+        this.$socket.emit('LEAVE_LIST', this.listId, this.viewerId);
+        next();
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.$socket.emit('LEAVE_LIST', this.listId, this.viewerId);
+        next();
     },
     methods: {
         // INITIALIZATION METHODS
@@ -223,11 +237,6 @@ export default {
         },
         setTitle (username) {
             this.title = `${username}'s shopping list`;
-        },
-        updateListCounter () {
-            const listId = this.userId === null ? this.authUser._id : this.userId;
-            const viewerId = this.isLoggedIn ? this.authUser._id : null;
-            this.$socket.emit('VIEW_LIST', listId, viewerId);
         },
 
         // GENERIC METHODS

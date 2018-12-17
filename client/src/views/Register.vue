@@ -119,9 +119,8 @@ export default {
                     this.isLoading = false;
                     this.$router.push('/shoppinglist');
                 })
-                .catch(err => {
+                .catch(() => {
                     this.isLoading = false;
-                    console.log(err);
                 });
         }
     }

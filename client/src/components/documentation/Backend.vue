@@ -27,7 +27,7 @@
         <ul class="doc-list">
             <li>Automatic restart of the node application when file changes are detected with <b>nodemon</b> library.</li>
             <li>Log the HTTP requests using the <b>morgan</b> library.</li>
-            <li>Code Linting using the <b>eslint</b> library</li> 
+            <li>Code Linting using the <b>eslint</b> library</li>
             <li><b>To do:</b> Unit tests environment should have been implemented to test our API. I would have chosen to install the following npm libraries <b>mocha, chai, sinon and sinon-mongoose</b></li>
         </ul>
     </div>
